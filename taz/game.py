@@ -2,6 +2,7 @@
 __author__ = 'Max'
 
 from os import sys
+from abc import ABCMeta, abstractmethod
 
 
 class Game(object):
@@ -65,11 +66,13 @@ class Game(object):
     def push_the_scene(self, ident):
         self.pause_current_scene()
         scene_to_push = self.registered_scenes[ident]
+        scene_to_push.paused = False
         scene_to_push.initialize_scene()
         self.scene_stack.insert(0, scene_to_push)
 
     def pause_current_scene(self):
         if not self.is_stack_empty():
+            self.scene_stack[0].paused = True
             self.scene_stack[0].tear_down()
 
     def is_stack_empty(self):
@@ -90,10 +93,12 @@ class Game(object):
 
     @staticmethod
     def pause_old_scene(oldscene):
+        oldscene.paused = True
         oldscene.tear_down()
 
     @staticmethod
     def resume_new_scene(newscene):
+        newscene.paused = False
         newscene.resume()
 
     def get_name_of_top_scene(self):
@@ -108,6 +113,8 @@ class Game(object):
 
 
 class Scene(object):
+    __metaclass__ = ABCMeta
+
     def __init__(self, ident):
         self.game = None
 
@@ -124,17 +131,22 @@ class Scene(object):
     def knows_registered_scenes(self):
         return len(self.registered_scenes) > 0
 
+    @abstractmethod
     def initialize_scene(self):
-        self.paused = False
+        return
 
+    @abstractmethod
     def update(self, update_context):
-        pass
+        return
 
+    @abstractmethod
     def render(self, render_context):
-        pass
+        return
 
+    @abstractmethod
     def tear_down(self):
-        self.paused = True
+        return
 
+    @abstractmethod
     def resume(self):
-        self.paused = False
+        return

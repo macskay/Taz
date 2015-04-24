@@ -14,9 +14,9 @@ class TestGame(TestCase):
     def setUp(self):
         dict = {}
         self.game = Game(dict, dict)
-        self.sceneone = Scene("TestScene1")
-        self.scenetwo = Scene("TestScene2")
-        self.scenethree = Scene("TestScene3")
+        self.sceneone = MockUpScene("TestScene1")
+        self.scenetwo = MockUpScene("TestScene2")
+        self.scenethree = MockUpScene("TestScene3")
 
     def tearDown(self):
         self.game = 0
@@ -147,7 +147,7 @@ class TestGame(TestCase):
 
 class TestScene(TestCase):
     def setUp(self):
-        self.scene = Scene("TestScene")
+        self.scene = MockUpScene("TestScene")
 
     def tearDown(self):
         self.scene = 0
@@ -157,10 +157,6 @@ class TestScene(TestCase):
 
     def test_if_scene_can_be_initialized(self):
         self.scene.initialize_scene()
-
-    def test_if_scene_gets_teared_down_paused_should_be_true(self):
-        self.scene.tear_down()
-        self.assertTrue(self.scene.is_paused())
 
     def test_if_scene_gets_resumed_paused_should_be_false(self):
         self.scene.tear_down()
@@ -181,32 +177,30 @@ class TestGameSceneCoupling(TestCase):
         }
 
         game = Game(update_context, render_context)
-        scene1 = SubScene("FirstSubScene")
-        scene2 = SubSubScene("SecondSubScene")
+        scene1 = MockUpScene("FirstMockUpScene")
+        scene2 = MockUpScene("SecondMockUpScene")
 
         game.register_new_scene(scene1)
         game.register_new_scene(scene2)
 
-        game.push_scene_on_stack("FirstSubScene")
-        game.push_scene_on_stack("SecondSubScene")
+        game.push_scene_on_stack("FirstMockUpScene")
+        game.push_scene_on_stack("SecondMockUpScene")
         try:
             game.enter_mainloop()
         except Game.GameExitException as ex:
             print(ex)
 
 
-class SubScene(Scene):
-    def update(self, update_context):
-        logger.info("Size of Stack: " + str(self.game.size_of_stack()))
-        logger.info("Update of Scene: " + str(self.get_identifier()))
-
-        self.game.pop_scene_from_stack()
-
-    def render(self, render_context):
+class MockUpScene(Scene):
+    def initialize_scene(self):
         pass
 
+    def resume(self):
+        pass
 
-class SubSubScene(Scene):
+    def tear_down(self):
+        pass
+
     def update(self, update_context):
         logger.info("Size of Stack: " + str(self.game.size_of_stack()))
         logger.info("Update of Scene: " + str(self.get_identifier()))
