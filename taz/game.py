@@ -34,7 +34,7 @@ class Game(object):
 
     def get_name_of_top_scene(self):
         topscene = self.get_top_scene()
-        return topscene.getIdentifier()
+        return topscene.get_identifier()
 
     # TODO: Register Scene
 
@@ -43,7 +43,7 @@ class Scene(object):
     def __init__(self, id):
         self.identifier = id
 
-    def getIdentifier(self):
+    def get_identifier(self):
         return self.identifier
 
     # TODO: Initialize, Render, Update, Teardown
