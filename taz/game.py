@@ -105,5 +105,4 @@ class Scene(object):
 
     def resume(self):
         self.paused = False
-        # TODO: Initialize, Render, Update, Teardown
 
