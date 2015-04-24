@@ -13,10 +13,6 @@ class Game(object):
         def __init__(self):
             pass
 
-    class TriedToRegisterNotASceneError(Exception):
-        def __init__(self):
-            pass
-
     class SceneAlreadyRegisteredError(Exception):
         def __init__(self):
             pass
@@ -25,30 +21,19 @@ class Game(object):
         def __init__(self):
             pass
 
-    class ParameterNotDictionaryError(Exception):
-        def __init__(self):
-            pass
-
-    class IDisNotAStringError(Exception):
-        def __init__(self):
-            pass
-
     def __init__(self, uc, rc):
         self.scene_stack = []
         self.registered_scenes = {}
 
-        if not self.param_is_dictionary(uc) or not self.param_is_dictionary(rc):
-            raise Game.ParameterNotDictionaryError
-
         self.update_context = uc
         self.render_context = rc
 
-    def param_is_dictionary(self, param):
-        return type(param) == dict
+    def enter_mainloop(self):
+        while True:
+            self.get_top_scene().update(self.update_context)
+            self.get_top_scene().render(self.render_context)
 
     def register_new_scene(self, scene):
-        if not self.is_an_instance_of(scene):
-            raise Game.TriedToRegisterNotASceneError
         if self.is_scene_already_registered(scene):
             raise Game.SceneAlreadyRegisteredError
 
@@ -57,10 +42,6 @@ class Game(object):
         self.update_all_scenes_registered_scenes()
 
         return True
-
-    @staticmethod
-    def is_an_instance_of(scn):
-        return isinstance(scn, Scene) or scn == Scene
 
     def is_scene_already_registered(self, scene):
         for scene_name in self.registered_scenes:
@@ -77,19 +58,15 @@ class Game(object):
 
     def push_scene_on_stack(self, ident):
         try:
-            if not self.is_a_string(ident):
-                raise Game.IDisNotAStringError
-
-            self.pause_current_scene()
-            scene_to_push = self.registered_scenes[ident]
-            scene_to_push.init_scene()
-            self.scene_stack.insert(0, scene_to_push)
+            self.push_the_scene(ident)
         except KeyError:
             raise Game.NoRegisteredSceneWithThisIDError
 
-    @staticmethod
-    def is_a_string(ident):
-        return type(ident) == str
+    def push_the_scene(self, ident):
+        self.pause_current_scene()
+        scene_to_push = self.registered_scenes[ident]
+        scene_to_push.initialize_scene()
+        self.scene_stack.insert(0, scene_to_push)
 
     def pause_current_scene(self):
         if not self.is_stack_empty():
@@ -129,11 +106,6 @@ class Game(object):
 
         return self.scene_stack[0]
 
-    def enter_mainloop(self):
-        while True:
-            self.get_top_scene().update(self.update_context)
-            self.get_top_scene().render(self.render_context)
-
 
 class Scene(object):
     def __init__(self, ident):
@@ -152,7 +124,7 @@ class Scene(object):
     def knows_registered_scenes(self):
         return len(self.registered_scenes) > 0
 
-    def init_scene(self):
+    def initialize_scene(self):
         self.paused = False
 
     def update(self, update_context):
@@ -166,6 +138,3 @@ class Scene(object):
 
     def resume(self):
         self.paused = False
-
-
-

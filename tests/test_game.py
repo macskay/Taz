@@ -2,8 +2,12 @@
 __author__ = 'Max'
 
 from unittest import TestCase
-
+from logging import getLogger, basicConfig, INFO
 from taz.game import Game, Scene
+from os.path import join
+
+logger = getLogger(__name__)
+basicConfig(level=INFO, format=' Log: - %(message)s')
 
 
 class TestGame(TestCase):
@@ -23,9 +27,6 @@ class TestGame(TestCase):
     def test_if_game_can_be_created(self):
         dict = {}
         self.assertIsNotNone(Game(dict, dict))
-
-    def test_if_game_parameters_are_dicts_only(self):
-        self.assertRaises(Game.ParameterNotDictionaryError, Game, 1, 2)
 
     def test_if_stack_is_empty(self):
         self.assertTrue(self.game.is_stack_empty())
@@ -87,19 +88,10 @@ class TestGame(TestCase):
         self.game.pop_scene_from_stack()
         self.assertRaises(Game.GameExitException, self.game.pop_scene_from_stack)
 
-
     def test_name_of_top_scene(self):
         self.game.register_new_scene(self.scenetwo)
         self.game.push_scene_on_stack(self.scenetwo.get_identifier())
         self.assertEqual(self.game.get_name_of_top_scene(), "TestScene2")
-
-    def test_if_pushed_element_is_not_a_scene_raise_error(self):
-        self.assertRaises(Game.IDisNotAStringError, self.game.push_scene_on_stack, 1)
-        self.assertRaises(Game.NoRegisteredSceneWithThisIDError, self.game.push_scene_on_stack, "ThisIsNotAScene")
-
-    def test_if_scene_can_be_registered(self):
-        self.assertTrue(self.game.register_new_scene(self.sceneone))
-        self.assertRaises(Game.TriedToRegisterNotASceneError, self.game.register_new_scene, "TestScene1")
 
     def test_if_one_scene_registered_len_should_be_one(self):
         self.game.register_new_scene(self.sceneone)
@@ -152,6 +144,7 @@ class TestGame(TestCase):
         self.game.push_scene_on_stack(self.scenetwo.get_identifier())
         self.game.push_scene_on_stack(self.scenethree.get_identifier())
 
+
 class TestScene(TestCase):
     def setUp(self):
         self.scene = Scene("TestScene")
@@ -163,9 +156,7 @@ class TestScene(TestCase):
         self.assertEqual(self.scene.get_identifier(), "TestScene")
 
     def test_if_scene_can_be_initialized(self):
-        dict = {}
-        game = Game(dict, dict)
-        self.scene.init_scene()
+        self.scene.initialize_scene()
 
     def test_if_scene_gets_teared_down_paused_should_be_true(self):
         self.scene.tear_down()
@@ -176,17 +167,9 @@ class TestScene(TestCase):
         self.scene.resume()
         self.assertFalse(self.scene.is_paused())
 
-    def test_update(self):
-        # TODO: test if update works
-        pass
-
-    def test_render(self):
-        # TODO: test if renderable
-        pass
-
 
 class TestGameSceneCoupling(TestCase):
-    def test_coupling(self):
+    def test_if_coupling_between_scene_and_game_works(self):
         render_context = {
             "screen": 0
         }
@@ -214,8 +197,9 @@ class TestGameSceneCoupling(TestCase):
 
 class SubScene(Scene):
     def update(self, update_context):
-        print("\nSize of Stack: " + str(self.game.size_of_stack()))
-        print("Update of Scene: " + self.get_identifier())
+        logger.info("Size of Stack: " + str(self.game.size_of_stack()))
+        logger.info("Update of Scene: " + str(self.get_identifier()))
+
         self.game.pop_scene_from_stack()
 
     def render(self, render_context):
@@ -224,8 +208,8 @@ class SubScene(Scene):
 
 class SubSubScene(Scene):
     def update(self, update_context):
-        print("Size of Stack: " + str(self.game.size_of_stack()))
-        print("Update of Scene: " + self.get_identifier())
+        logger.info("Size of Stack: " + str(self.game.size_of_stack()))
+        logger.info("Update of Scene: " + str(self.get_identifier()))
         self.game.pop_scene_from_stack()
 
     def render(self, render_context):
