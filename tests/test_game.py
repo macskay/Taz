@@ -1,3 +1,4 @@
+# -*- encoding: UTF-8 -*-
 __author__ = 'Max'
 
 from unittest import TestCase

@@ -1,3 +1,4 @@
+# -*- encoding: UTF-8 -*-
 __author__ = 'Max'
 
 
@@ -61,7 +62,7 @@ class Game(object):
         if self.is_scene_already_registered(ident):
             raise Game.SceneAlreadyRegisteredError
         scene = Scene(ident)
-        scene_to_push.init_scene(self.registered_scenes)
+        scene.init_scene(self.registered_scenes)
         self.registered_scenes[ident] = scene
 
     def is_scene_already_registered(self, ident):
@@ -104,5 +105,5 @@ class Scene(object):
 
     def resume(self):
         self.paused = False
-    # TODO: Initialize, Render, Update, Teardown
+        # TODO: Initialize, Render, Update, Teardown
 
