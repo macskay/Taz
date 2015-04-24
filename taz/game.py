@@ -15,6 +15,14 @@ class Game(object):
         def __init__(self):
             pass
 
+    class NoRegisteredSceneWithThisIDError(Exception):
+        def __init__(self):
+            pass
+
+    class IDisNotAStringError(Exception):
+        def __init__(self):
+            pass
+
     def __init__(self):
         self.scene_stack = []
         self.registered_scenes = {}
@@ -47,11 +55,19 @@ class Game(object):
     def size_of_stack(self):
         return len(self.scene_stack)
 
-    def push_scene_on_stack(self, scene_to_push):
-        self.pause_current_scene()
-        if not self.is_a_scene(scene_to_push):
-            raise Game.NotAScenePushedOnStackError
-        self.scene_stack.insert(0, scene_to_push)
+    def push_scene_on_stack(self, ident):
+        try:
+            if not self.is_a_string(ident):
+                raise Game.IDisNotAStringError
+
+            self.pause_current_scene()
+            scene_to_push = self.registered_scenes[ident]
+            self.scene_stack.insert(0, scene_to_push)
+        except KeyError:
+            raise Game.NoRegisteredSceneWithThisIDError
+
+    def is_a_string(self, ident):
+        return type(ident) == str
 
     def pause_current_scene(self):
         if not self.is_stack_empty():
