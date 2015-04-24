@@ -1,7 +1,7 @@
 __author__ = 'Max'
 
 from unittest import TestCase
-from taz.game import Game, GameStackEmptyError, Scene, NotAScenePushedOnStackError
+from taz.game import Game, Scene
 
 
 class TestGame(TestCase):
@@ -39,15 +39,15 @@ class TestGame(TestCase):
         self.assertEqual(self.game.size_of_stack(), 1)
 
     def test_if_popped_empty_stack_raise_empty_error(self):
-        self.assertRaises(GameStackEmptyError, self.game.pop_scene_from_stack)
+        self.assertRaises(Game.GameStackEmptyError, self.game.pop_scene_from_stack)
 
     def test_name_of_top_scene(self):
         self.game.push_scene_on_stack(self.scenetwo)
         self.assertEqual(self.game.get_name_of_top_scene(), "TestScene2")
 
     def test_if_pushed_element_is_not_a_scene_raise_error(self):
-        self.assertRaises(NotAScenePushedOnStackError, self.game.push_scene_on_stack, 1)
-        self.assertRaises(NotAScenePushedOnStackError, self.game.push_scene_on_stack, "ThisIsNotAScene")
+        self.assertRaises(Game.NotAScenePushedOnStackError, self.game.push_scene_on_stack, 1)
+        self.assertRaises(Game.NotAScenePushedOnStackError, self.game.push_scene_on_stack, "ThisIsNotAScene")
 
 
 class TestScene(TestCase):
