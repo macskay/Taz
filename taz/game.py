@@ -19,18 +19,46 @@ class Game(object):
         self.scene_stack = []
         self.registered_scenes = {}
 
+    def register_new_scene(self, scene):
+        if not self.is_a_scene(scene):
+            raise Game.NotAScenePushedOnStackError
+        if self.is_scene_already_registered(scene):
+            raise Game.SceneAlreadyRegisteredError
+
+        self.registered_scenes[scene.get_identifier()] = scene
+        self.update_all_scenes_registered_scenes()
+
+        return True
+
+    @staticmethod
+    def is_a_scene(scene):
+        return type(scene) is Scene
+
+    def is_scene_already_registered(self, scene):
+        for scene_name in self.registered_scenes:
+            if scene_name == scene.get_identifier():
+                return True
+        return False
+
+    def update_all_scenes_registered_scenes(self):
+        for scene in self.registered_scenes.iteritems():
+            scene[1].registered_scenes = self.registered_scenes
+
     def size_of_stack(self):
         return len(self.scene_stack)
 
     def push_scene_on_stack(self, scene_to_push):
         self.pause_current_scene()
-        if type(scene_to_push) is not Scene:
+        if not self.is_a_scene(scene_to_push):
             raise Game.NotAScenePushedOnStackError
         self.scene_stack.insert(0, scene_to_push)
 
     def pause_current_scene(self):
         if not self.is_stack_empty():
             self.scene_stack[0].tear_down()
+
+    def is_stack_empty(self):
+        return self.size_of_stack() == 0
 
     def pop_scene_from_stack(self):
         if self.is_stack_empty():
@@ -39,9 +67,6 @@ class Game(object):
         self.pause_old_scene(self.scene_stack[0])
         self.scene_stack.pop(0)
         self.resume_new_scene(self.scene_stack[0])
-
-    def is_stack_empty(self):
-        return self.size_of_stack() == 0
 
     @staticmethod
     def pause_old_scene(oldscene):
@@ -56,20 +81,10 @@ class Game(object):
         return topscene.get_identifier()
 
     def get_top_scene(self):
+        if self.is_stack_empty():
+            raise Game.GameStackEmptyError
+
         return self.scene_stack[0]
-
-    def register_new_scene(self, ident):
-        if self.is_scene_already_registered(ident):
-            raise Game.SceneAlreadyRegisteredError
-        scene = Scene(ident)
-        scene.init_scene(self.registered_scenes)
-        self.registered_scenes[ident] = scene
-
-    def is_scene_already_registered(self, ident):
-        for scene_name in self.registered_scenes:
-            if scene_name == ident:
-                return True
-        return False
 
 
 class Scene(object):

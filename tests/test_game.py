@@ -50,6 +50,12 @@ class TestGame(TestCase):
     def test_if_popped_empty_stack_raise_empty_error(self):
         self.assertRaises(Game.GameStackEmptyError, self.game.pop_scene_from_stack)
 
+    def test_if_asked_for_top_scene_on_empty_stack_raise_error(self):
+        self.assertRaises(Game.GameStackEmptyError, self.game.get_top_scene)
+
+    def test_if_asked_for_top_scene_name_on_empty_stack_raise_error(self):
+        self.assertRaises(Game.GameStackEmptyError, self.game.get_name_of_top_scene)
+
     def test_name_of_top_scene(self):
         self.game.push_scene_on_stack(self.scenetwo)
         self.assertEqual(self.game.get_name_of_top_scene(), "TestScene2")
@@ -58,32 +64,49 @@ class TestGame(TestCase):
         self.assertRaises(Game.NotAScenePushedOnStackError, self.game.push_scene_on_stack, 1)
         self.assertRaises(Game.NotAScenePushedOnStackError, self.game.push_scene_on_stack, "ThisIsNotAScene")
 
+    def test_if_scene_can_be_registered(self):
+        self.assertTrue(self.game.register_new_scene(self.sceneone))
+        self.assertRaises(Game.NotAScenePushedOnStackError, self.game.register_new_scene, "TestScene1")
+
     def test_if_one_scene_registered_len_should_be_one(self):
-        self.game.register_new_scene("OptionsMenu")
+        self.game.register_new_scene(self.sceneone)
         self.assertEqual(len(self.game.registered_scenes), 1)
 
     def test_if_scene_is_registered_twice_raise_error(self):
-        self.game.register_new_scene("OptionsMenu")
-        self.assertRaises(Game.SceneAlreadyRegisteredError, self.game.register_new_scene, "OptionsMenu")
+        self.game.register_new_scene(self.sceneone)
+        self.assertRaises(Game.SceneAlreadyRegisteredError, self.game.register_new_scene, self.sceneone)
 
     def test_if_active_scene_is_paused_if_another_scene_is_pushed_on_top(self):
-        self.game.push_scene_on_stack(self.sceneone)
-        self.game.push_scene_on_stack(self.scenetwo)
-        self.game.push_scene_on_stack(self.scenethree)
+        self.push_scenes()
 
         self.assertTrue(self.sceneone.is_paused())
         self.assertTrue(self.scenetwo.is_paused())
         self.assertFalse(self.scenethree.is_paused())
 
     def test_if_scene_is_unpaused_after_popped_higher_scene(self):
-        self.game.push_scene_on_stack(self.sceneone)
-        self.game.push_scene_on_stack(self.scenetwo)
-        self.game.push_scene_on_stack(self.scenethree)
+        self.push_scenes()
         self.game.pop_scene_from_stack()
 
         self.assertTrue(self.sceneone.is_paused())
         self.assertFalse(self.scenetwo.is_paused())
         self.assertTrue(self.scenethree.is_paused())
+
+    def test_if_scenes_registered_scenes_get_updated_after_pushing_new_scenes(self):
+        self.register_scenes()
+
+        self.assertEqual(len(self.sceneone.registered_scenes), 3)
+        self.assertEqual(len(self.scenetwo.registered_scenes), 3)
+        self.assertEqual(len(self.scenethree.registered_scenes), 3)
+
+    def register_scenes(self):
+        self.game.register_new_scene(self.sceneone)
+        self.game.register_new_scene(self.scenetwo)
+        self.game.register_new_scene(self.scenethree)
+
+    def push_scenes(self):
+        self.game.push_scene_on_stack(self.sceneone)
+        self.game.push_scene_on_stack(self.scenetwo)
+        self.game.push_scene_on_stack(self.scenethree)
 
 
 class TestScene(TestCase):
