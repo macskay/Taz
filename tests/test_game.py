@@ -8,7 +8,8 @@ from taz.game import Game, Scene
 
 class TestGame(TestCase):
     def setUp(self):
-        self.game = Game()
+        dict = {}
+        self.game = Game(dict, dict)
         self.sceneone = Scene("TestScene1")
         self.scenetwo = Scene("TestScene2")
         self.scenethree = Scene("TestScene3")
@@ -18,6 +19,13 @@ class TestGame(TestCase):
         self.sceneone = 0
         self.scenetwo = 0
         self.scenethree = 0
+
+    def test_if_game_can_be_created(self):
+        dict = {}
+        self.assertIsNotNone(Game(dict, dict))
+
+    def test_if_game_parameters_are_dicts_only(self):
+        self.assertRaises(Game.ParameterNotDictionaryError, Game, 1, 2)
 
     def test_if_stack_is_empty(self):
         self.assertTrue(self.game.is_stack_empty())
@@ -62,13 +70,23 @@ class TestGame(TestCase):
         self.assertEqual(self.game.size_of_stack(), 1)
 
     def test_if_popped_empty_stack_raise_empty_error(self):
-        self.assertRaises(Game.GameStackEmptyError, self.game.pop_scene_from_stack)
+        self.assertRaises(Game.StackEmptyError, self.game.pop_scene_from_stack)
 
     def test_if_asked_for_top_scene_on_empty_stack_raise_error(self):
-        self.assertRaises(Game.GameStackEmptyError, self.game.get_top_scene)
+        self.assertRaises(Game.StackEmptyError, self.game.get_top_scene)
 
     def test_if_asked_for_top_scene_name_on_empty_stack_raise_error(self):
-        self.assertRaises(Game.GameStackEmptyError, self.game.get_name_of_top_scene)
+        self.assertRaises(Game.StackEmptyError, self.game.get_name_of_top_scene)
+
+    def test_if_last_scene_popped_raises_exit_exception(self):
+        self.game.register_new_scene(self.sceneone)
+        self.game.register_new_scene(self.scenetwo)
+        self.game.push_scene_on_stack(self.sceneone.get_identifier())
+        self.game.push_scene_on_stack(self.scenetwo.get_identifier())
+
+        self.game.pop_scene_from_stack()
+        self.assertRaises(Game.GameExitException, self.game.pop_scene_from_stack)
+
 
     def test_name_of_top_scene(self):
         self.game.register_new_scene(self.scenetwo)
@@ -81,7 +99,7 @@ class TestGame(TestCase):
 
     def test_if_scene_can_be_registered(self):
         self.assertTrue(self.game.register_new_scene(self.sceneone))
-        self.assertRaises(Game.NotAScenePushedOnStackError, self.game.register_new_scene, "TestScene1")
+        self.assertRaises(Game.TriedToRegisterNotASceneError, self.game.register_new_scene, "TestScene1")
 
     def test_if_one_scene_registered_len_should_be_one(self):
         self.game.register_new_scene(self.sceneone)
@@ -134,7 +152,6 @@ class TestGame(TestCase):
         self.game.push_scene_on_stack(self.scenetwo.get_identifier())
         self.game.push_scene_on_stack(self.scenethree.get_identifier())
 
-
 class TestScene(TestCase):
     def setUp(self):
         self.scene = Scene("TestScene")
@@ -146,8 +163,9 @@ class TestScene(TestCase):
         self.assertEqual(self.scene.get_identifier(), "TestScene")
 
     def test_if_scene_can_be_initialized(self):
-        reg_scenes = {"SceneOne": Scene("SceneOne"), "SceneTwo": Scene("SceneTwo")}
-        self.scene.init_scene(reg_scenes)
+        dict = {}
+        game = Game(dict, dict)
+        self.scene.init_scene()
 
     def test_if_scene_gets_teared_down_paused_should_be_true(self):
         self.scene.tear_down()
@@ -167,11 +185,48 @@ class TestScene(TestCase):
         pass
 
 
+class TestGameSceneCoupling(TestCase):
+    def test_coupling(self):
+        render_context = {
+            "screen": 0
+        }
+
+        update_context = {
+            "clock": 0,
+            "get_events": 0,
+            "pump": 0
+        }
+
+        game = Game(update_context, render_context)
+        scene1 = SubScene("FirstSubScene")
+        scene2 = SubSubScene("SecondSubScene")
+
+        game.register_new_scene(scene1)
+        game.register_new_scene(scene2)
+
+        game.push_scene_on_stack("FirstSubScene")
+        game.push_scene_on_stack("SecondSubScene")
+        try:
+            game.enter_mainloop()
+        except Game.GameExitException as ex:
+            print(ex)
 
 
+class SubScene(Scene):
+    def update(self, update_context):
+        print("\nSize of Stack: " + str(self.game.size_of_stack()))
+        print("Update of Scene: " + self.get_identifier())
+        self.game.pop_scene_from_stack()
+
+    def render(self, render_context):
+        pass
 
 
+class SubSubScene(Scene):
+    def update(self, update_context):
+        print("Size of Stack: " + str(self.game.size_of_stack()))
+        print("Update of Scene: " + self.get_identifier())
+        self.game.pop_scene_from_stack()
 
-
-
-
+    def render(self, render_context):
+        pass
