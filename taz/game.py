@@ -128,25 +128,22 @@ class Scene(object):
     def is_paused(self):
         return self.paused
 
-    def knows_registered_scenes(self):
-        return len(self.registered_scenes) > 0
-
-    @abstractmethod
+    @abstractmethod  # pragma: no cover
     def initialize_scene(self):
-        return
+        """ This method should build up the scene """
 
-    @abstractmethod
+    @abstractmethod  # pragma: no cover
     def update(self, update_context):
-        return
+        """ This method should update the game's logic """
 
-    @abstractmethod
+    @abstractmethod  # pragma: no cover
     def render(self, render_context):
-        return
+        """ This method should draw the game's screen """
 
-    @abstractmethod
+    @abstractmethod  # pragma: no cover
     def tear_down(self):
-        return
+        """ This method should clean-up the scene before leaving it """
 
-    @abstractmethod
+    @abstractmethod  # pragma: no cover
     def resume(self):
-        return
+        """ This method should re-build the last state of the level (e.g. after returning from options) """
