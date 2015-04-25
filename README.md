@@ -10,7 +10,7 @@ stack. Whenever the user pops the last stacked scene the game will come to an en
 
 Taz works independent of any python based game library.
 
-![Travis-CI Build](https://travis-ci.org/wkmanire/Taz.svg?branch=master)
+Master-Branch: ![Travis-CI Build](https://travis-ci.org/mkli90/Taz.svg?branch=master)
 
 # Usage
 
