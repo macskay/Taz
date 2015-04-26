@@ -1,7 +1,6 @@
 # -*- encoding: UTF-8 -*-
 __author__ = 'Max'
 
-from os import sys
 from abc import ABCMeta, abstractmethod
 
 

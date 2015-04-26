@@ -4,7 +4,6 @@ __author__ = 'Max'
 from unittest import TestCase
 from logging import getLogger, basicConfig, INFO
 from taz.game import Game, Scene
-from os.path import join
 
 logger = getLogger(__name__)
 basicConfig(level=INFO, format=' Log: - %(message)s')
@@ -12,8 +11,8 @@ basicConfig(level=INFO, format=' Log: - %(message)s')
 
 class TestGame(TestCase):
     def setUp(self):
-        dict = {}
-        self.game = Game(dict, dict)
+        self.dict = {}
+        self.game = Game(self.dict, self.dict)
         self.sceneone = MockUpScene("TestScene1")
         self.scenetwo = MockUpScene("TestScene2")
         self.scenethree = MockUpScene("TestScene3")
@@ -25,8 +24,7 @@ class TestGame(TestCase):
         self.scenethree = 0
 
     def test_if_game_can_be_created(self):
-        dict = {}
-        self.assertIsNotNone(Game(dict, dict))
+        self.assertIsNotNone(Game(self.dict, self.dict))
 
     def test_if_stack_is_empty(self):
         self.assertTrue(self.game.is_stack_empty())
