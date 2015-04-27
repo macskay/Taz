@@ -1,6 +1,9 @@
 {
     "config": {
-	"starting-room": "Bedroom"
+      "starting-room": "Bedroom",
+      "invalid_command": "'I can't do that!",
+      "invalid_look": "'I will most certainly not look that way!'",
+      "default_go": "'Go where?!'"
     },
     "rooms": [
     {
@@ -11,8 +14,8 @@
 	    "Rusty Rake": "A rusty rake lies partially hidden in the overgrown grass which you need to cut."
 	},
 	"exits": {
-	    "south": "Shed",
-	    "north": "Living Room"
+	    "shed": "Shed",
+	    "livingroom": "Living Room"
 	}
     }, {
 	"name": "Garage",

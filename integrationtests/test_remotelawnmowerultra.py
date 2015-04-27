@@ -17,19 +17,12 @@ class PlayerTestCase(TestCase):
 
 
 class GameFactoryTestCase(TestCase):
-
     def setUp(self):
         self.mock_stdout = StringIO()
         self.mock_stdin = StringIO()
         self.mock_stdin.write("some stuff\n")
         self.mock_stdin.seek(0)
-        self.game = GameFactory(self.mock_stdin, self.mock_stdout, {
-            "config": {"starting-room": "room"},
-            "rooms": [{
-                "name": "room",
-                "description": "This is test room",
-                "objects": dict()
-            }]}).create()
+        self.game = GameFactory(self.mock_stdin, self.mock_stdout, self.get_test_world_data()).create()
 
     def test_new_game_should_have_one_scene(self):
         self.assertEqual(len(self.game.registered_scenes), 1)
@@ -62,6 +55,31 @@ class GameFactoryTestCase(TestCase):
         with self.assertRaises(GameFactory.MissingStartingRoom):
             game = GameFactory(None, None, dict()).create()
 
+    def get_test_update_context(self):
+        return {
+            "input_fob": StringIO(),
+            "world_data": self.get_test_world_data()
+        }
+
+    def get_test_world_data(self):
+        return {
+            "config": self.get_test_config(),
+            "rooms": self.get_test_rooms()
+        }
+
+    def get_test_config(self):
+        return {
+            "starting-room": "room",
+            "invalid_command": None
+        }
+
+    def get_test_rooms(self):
+        return [{
+            "name": "room",
+            "description": "This is test room",
+            "objects": dict()
+        }]
+
 
 class RoomSceneTestCase(TestCase):
 
@@ -71,9 +89,8 @@ class RoomSceneTestCase(TestCase):
         self.context = {
             "output_fob": self.stdout 
         }
-        self.scene.update({
-            "input_fob": StringIO()
-        })
+        self.update_context = self.get_test_update_context()
+        self.scene.update(self.update_context)
         self.scene.output_buffer.write("line one\nline two")
         self.scene.output_buffer.seek(0)
 
@@ -83,13 +100,37 @@ class RoomSceneTestCase(TestCase):
 
     def test_output_buffer_should_not_accumulate(self):
         self.scene.render(self.context)
-        self.scene.update({
-            "input_fob": StringIO()
-        })
+        self.scene.update(self.update_context)
         self.assertEqual(0, len(self.scene.output_buffer.getvalue()))
 
+    def get_test_update_context(self):
+        return {
+            "input_fob": StringIO(),
+            "world_data": self.get_test_world_data()
+        }
 
-class RoomSceneLookTestCase(TestCase):
+    def get_test_world_data(self):
+        return {
+            "config": self.get_test_config(),
+            "rooms": self.get_test_rooms()
+        }
+
+    def get_test_config(self):
+        return {
+            "starting-room": "room",
+            "invalid_command": None,
+            "default_go": "'Go where?!'"
+        }
+
+    def get_test_rooms(self):
+        return [{
+            "name": "room",
+            "description": "This is test room",
+            "objects": dict()
+        }]
+
+
+class RoomSceneCommandTestCase(TestCase):
 
     def setUp(self):
         self.scene = RoomScene("room")
@@ -99,15 +140,7 @@ class RoomSceneLookTestCase(TestCase):
         self.stdout = StringIO()
         self.update_context = {
             "input_fob": self.stdin,
-            "world_data": {
-                "config": {"starting-room": "room"},
-                "rooms": [{
-                    "name": "room",
-                    "description": "This is test room",
-                    "objects": {
-                        "Unit Test": "It appears... useful"
-                    }
-                }]}
+            "world_data": self.get_test_command_world_data()
         }
         self.render_context = {
             "output_fob": self.stdout            
@@ -123,10 +156,6 @@ class RoomSceneLookTestCase(TestCase):
     def assertOutputContains(self, message):
         self.assertIn(message, self.stdout.getvalue())
 
-    @skip("TODO")
-    def test_no_good_command(self):
-        pass
-
     def test_look(self):
         self.process_command("look")
         self.assertOutputContains("This is test room")
@@ -135,6 +164,54 @@ class RoomSceneLookTestCase(TestCase):
         self.process_command("look at Unit Test")
         self.assertOutputContains("It appears... useful")
 
-    @skip("TODO")
     def test_look_at_nothing(self):
-        pass
+        self.process_command("look at nothing")
+        self.assertOutputContains("'I will not look at that TDD!'")
+
+    def test_no_good_command(self):
+        self.process_command("foobar at foobar")
+        self.assertOutputContains("'I can't do that! No Test is backing me up!'")
+
+    def test_go(self):
+        self.process_command("go")
+        self.assertOutputContains("'Go where?!'")
+
+    def test_go_in_room(self):
+        self.process_command("go in room 2")
+        self.assertOutputContains("This is the second test room")
+        self.process_command("go in room")
+        self.assertOutputContains("This is test room")
+
+    def get_test_command_config(self):
+        return {
+            "starting-room": "room",
+            "invalid_command": "'I can't do that! No Test is backing me up!'",
+            "invalid_look": "'I will not look at that TDD!'",
+            "default_go": "'Go where?!'"
+        }
+
+    def get_test_command_world_data(self):
+        return {
+            "config": self.get_test_command_config(),
+            "rooms": self.get_test_command_rooms()
+        }
+
+    def get_test_command_rooms(self):
+        return [{
+            "name": "room",
+            "description": "This is test room",
+            "objects": {
+                "Unit Test": "It appears... useful"
+            },
+            "exits": {
+                1: "room 2"
+            }
+        },  {
+            "name": "room 2",
+            "description": "This is the second test room",
+            "objects": {
+            },
+            "exits": {
+                1: "room"
+            }
+        }]

@@ -9,7 +9,7 @@ from taz.game import Game, Scene
 class Player(object):
 
     def __init__(self):
-        self.room_id = None  # TODO: rename to room_name
+        self.room_id = None
 
 
 class RoomScene(Scene):
@@ -20,7 +20,10 @@ class RoomScene(Scene):
         self.player = None
         self.commands = [(re.compile("^look$"), self.look_command),
                          (re.compile("^look at (?P<what>.+)$"), self.look_at_command),
-                         (re.compile("^look (?P<what>.+)$"), self.look_at_command)]
+                         (re.compile("^look (?P<what>.+)$"), self.look_at_command),
+                         (re.compile("^go$"), self.go_command),
+                         (re.compile("^go in (?P<direction>.+)$"), self.go_in_a_room_command)
+                         ]
 
     def initialize_scene(self):
         pass
@@ -33,23 +36,68 @@ class RoomScene(Scene):
 
     def update(self, update_context):
         self.output_buffer = StringIO()
+        self.process_command(update_context)
+        self.output_buffer.seek(0)
+
+    def process_command(self, update_context):
         commandText = update_context["input_fob"].readline().strip()
         for expression, command in self.commands:
             match = expression.match(commandText)
-            if match:
-                command(update_context, match)
+            if self.is_expression_valid(command, match, update_context):
                 break
-        self.output_buffer.seek(0)
+        else:
+            self.write_invalid_command_to_buffer(update_context)
 
-    def look_command(self, update_context, match):
+    @staticmethod
+    def is_expression_valid(command, match, update_context):
+        if match:
+            command(update_context, match)
+            return True
+        return False
+
+    def write_invalid_command_to_buffer(self, update_context):
+        self.output_buffer.write(update_context["world_data"]["config"]["invalid_command"])
+
+    def look_around(self, update_context):
         room = self.get_current_room(update_context)
         self.output_buffer.write(room["description"])
+
+    def look_command(self, update_context, match):
+        self.look_around(update_context)
 
     def look_at_command(self, update_context, match):
         room = self.get_current_room(update_context)
         what = match.group("what")
+        try:
+            self.look_up_and_write_object_to_buffer(room, what)
+        except StopIteration:
+            self.write_invalid_look_to_buffer(update_context)
+
+    def go_command(self, update_context, match):
+        self.output_buffer.write(update_context["world_data"]["config"]["default_go"])
+
+    def go_in_a_room_command(self, update_context, match):
+        current_room = self.get_current_room(update_context)
+        direction = match.group("direction")
+        for key, value in current_room["exits"].items():
+            if self.can_go_to_that_room(direction, value):
+                self.go_to_room(update_context, value)
+
+    @staticmethod
+    def can_go_to_that_room(direction, value):
+        return direction == value
+
+    def go_to_room(self, update_context, value):
+        self.player.room_id = value
+        self.look_around(update_context)
+
+    def look_up_and_write_object_to_buffer(self, room, what):
         obj = next((value for key, value in room["objects"].items() if key == what))
         self.output_buffer.write(obj)
+
+    def write_invalid_look_to_buffer(self, update_context):
+        look_cmd_not_valid = update_context["world_data"]["config"]["invalid_look"]
+        self.output_buffer.write(look_cmd_not_valid)
 
     def get_current_room(self, update_context):
         rooms = update_context["world_data"]["rooms"]
