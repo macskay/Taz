@@ -3,7 +3,13 @@
       "starting-room": "Bedroom",
       "invalid_command": "'I can't do that!",
       "invalid_look": "'I will most certainly not look that way!'",
-      "default_go": "'Go where?!'"
+      "invalid_room": "There is no spoon..oops..There is no %s",
+      "invalid_item": "There is no %s, which Travis can put in his inventory",
+      "default_go": "'Go where?!'",
+      "default_take": "'Take what?!'",
+      "take_item": "Travis takes %s and puts it in his inventory",
+      "item_already_in_inv": "This item is already in Travis' inventory"
+
     },
     "rooms": [
     {
