@@ -1,0 +1,65 @@
+{
+    "config": {
+	"starting-room": "Bedroom"
+    },
+    "rooms": [
+    {
+	"name": "Backyard",
+	"description": "This is the backyard",
+	"item": "Screw-Driver",
+	"objects": {
+	    "Rusty Rake": "A rusty rake lies partially hidden in the overgrown grass which you need to cut."
+	},
+	"exits": {
+	    "south": "Shed",
+	    "north": "Living Room"
+	}
+    }, {
+	"name": "Garage",
+	"description": "This is the garage",
+	"item": "Duct Tape",
+	"objects": {
+	},
+	"exits": {
+	}
+    }, {
+	"name": "Living Room",
+	"description": "This is the living room",
+	"item": "Antenna",
+	"objects": {
+	},
+	"exits": {
+	}
+    }, {
+	"name": "Office",
+	"description": "This is the office",
+	"item": "Hot Glue",
+	"objects": {
+	},
+	"exits": {
+	}
+    }, {
+	"name": "Bedroom",
+	"description": "This is the bedroom",
+	"item": "N64 Controller",
+	"objects": {
+	},
+	"exits": {
+	}
+    }, {
+	"name": "Shed",
+	"description": "This is the shed",
+	"item": "Armadillos",
+	"objects": {
+	},
+	"exits": {
+	}
+    }, {
+	"name": "Kitchen",
+	"description": "This is the kitchen",
+	"item": "Battery",
+	"objects": {
+	},
+	"exits": {
+	}}]
+}
