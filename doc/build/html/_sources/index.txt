@@ -1,0 +1,27 @@
+Welcome to Taz's documentation!
+===============================
+
+This project is to aid people in getting started with their own Python based game.
+Taz is a small library handling the switching of scenes and making sure your scenes get updated and rendered on every tick.
+
+The scenes will be organised in a game stack, which will automatically be updated for all scenes whenever
+a new scene is registered with the Taz library. The user has the opportunity to force scene changes in pushing or
+popping from the game's stack. Whenever the user pops the last stacked scene the game will come to an end.
+
+Taz works independent of any python based game library.
+
+
+Contents:
+
+.. toctree::
+   :maxdepth: 1
+
+      license
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
