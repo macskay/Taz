@@ -4,11 +4,13 @@ import re
 from StringIO import StringIO
 from os import sys, system
 from json import load, loads
+from argparse import ArgumentParser
 
 from taz.game import Game, Scene
 
 
 class GameFactory(object):
+    
     class MissingStartingRoom(Exception):
         pass
 
@@ -16,11 +18,12 @@ class GameFactory(object):
         self.output_fob = output_fob
         self.input_fob = input_fob
         self.world_data = world_data
-        self.instructions_file = InstructionReader()
+        self.InstructionReaderClass = InstructionReader
 
     def create(self, start_scene_name):
+        instructions_file = self.InstructionReaderClass()
         game = Game(self.get_update_context(), self.get_render_context())
-        title_scene = TitleScene(start_scene_name, self.instructions_file)
+        title_scene = TitleScene(start_scene_name, instructions_file)
         game.register_new_scene(title_scene)
         game.push_scene_on_stack(start_scene_name)
         return game
@@ -403,6 +406,7 @@ class TitleScene(Scene):
 
 
 class InstructionReader(object):
+    
     def __init__(self):
         self.instruction_file = self.open_instruction_file()
 
@@ -423,5 +427,6 @@ if __name__ == "__main__":
         world_data = load(f)
 
     gameFactory = GameFactory(stdin, stdout, world_data)
+    gameFactory.InstructionReaderClass = InstructionReader
     game = gameFactory.create("TitleScreen")
     game.enter_mainloop()
