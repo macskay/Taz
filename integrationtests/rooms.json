@@ -126,12 +126,12 @@
 	"description": "The shed is very small and not very clean.\nBut in the chaos there two things sticking out. The huge hole in the ground,\nwhich wasn't there the last time Travis went into that shed and the Grillmaster Deluxe Travis bought\ninstead of giving her wife her long overdue face lifting.",
 	"item": "Armadillos",
     "look_objects": {
-      "Hole":"Travis examines the hole in the ground and finds for armadillos in it. They might be of use!",
+      "Hole":"Travis examines the hole in the ground and finds four armadillos in it. They might be of use!",
       "Grillmaster":"That is a beauty of a barbecue-grill. Summer better come soon!"
     },
     "take_objects": {
       "Armadillos":"Travis takes all four armadillos and puts them in his inventory. They can certainley be used in assembling a lawn mower.",
-      "Grillmaster:":"As much as Travis likes to grill now, there is no time before the lawn has been cut."
+      "Grillmaster":"As much as Travis likes to grill now, there is no time before the lawn has been cut."
     },
     "exits": {
       "backyard":"Backyard"
