@@ -2,6 +2,8 @@ __author__ = 'Max'
 
 import re
 from StringIO import StringIO
+from os import sys
+from json import load, loads
 
 from taz.game import Game, Scene
 
@@ -250,3 +252,14 @@ class GameFactory(object):
             player.room_id = self.world_data["config"]["starting-room"]
         except KeyError:
             raise self.MissingStartingRoom()
+
+if __name__ == "__main__":
+    world_data = {}
+    stdout = sys.stdout
+    stdin = sys.stdin
+
+    with open("rooms.json") as file:
+        world_data = load(file)
+
+    gameFactory = GameFactory(stdin, stdout, world_data)
+    game = gameFactory.create()
