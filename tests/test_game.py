@@ -163,10 +163,7 @@ class TestScene(TestCase):
 
     def test_if_coupling_between_scene_and_game_works(self):
             game = self.setup_mock_up_scene()
-            try:
-                game.enter_mainloop()
-            except SystemExit:
-                pass
+            self.run_mainloop(game)
 
     def setup_mock_up_scene(self):
         update_context, render_context = self.setup_contexts()
@@ -192,10 +189,7 @@ class TestScene(TestCase):
         return uc, rc
 
     def run_mainloop(self, game):
-        try:
-            game.enter_mainloop()
-        except Game.GameExitException:
-            logger.info("Taz terminates, since last scene has been popped from the stack")
+        game.enter_mainloop()
 
     def create_mock_up_scene_objects(self):
         scene1 = MockUpScene("FirstMockUpScene")

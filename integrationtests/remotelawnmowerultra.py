@@ -52,10 +52,10 @@ class RoomScene(Scene):
         self.output_buffer = StringIO()
         self.player = None
         self.commands = []
-        self.append_go_regex_to_commands()
+        self.append_all_regex_to_commands()
         self.welcome_data = welcome_data
 
-    def append_regex_to_commands(self):
+    def append_all_regex_to_commands(self):
         self.append_look_regex_to_commands()
         self.append_go_regex_to_commands()
         self.append_take_regex_to_commands()

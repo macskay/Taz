@@ -30,9 +30,12 @@ class Game(object):
         self.render_context = rc
 
     def enter_mainloop(self):
-        while True:
-            self.get_top_scene().update(self.update_context)
-            self.get_top_scene().render(self.render_context)
+        try:
+            while True:
+                self.get_top_scene().update(self.update_context)
+                self.get_top_scene().render(self.render_context)
+        except SystemExit:
+            pass
 
     def register_new_scene(self, scene):
         if self.is_scene_already_registered(scene):
