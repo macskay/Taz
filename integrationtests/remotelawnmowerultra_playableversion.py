@@ -1,5 +1,7 @@
 __author__ = 'Max'
 
+__author__ = 'Max'
+
 import re
 from StringIO import StringIO
 from os import sys, system
@@ -16,11 +18,10 @@ class GameFactory(object):
         self.output_fob = output_fob
         self.input_fob = input_fob
         self.world_data = world_data
-        self.instructions_file = InstructionReader()
 
     def create(self, start_scene_name):
         game = Game(self.get_update_context(), self.get_render_context())
-        title_scene = TitleScene(start_scene_name, self.instructions_file)
+        title_scene = TitleScene(start_scene_name)
         game.register_new_scene(title_scene)
         game.push_scene_on_stack(start_scene_name)
         return game
@@ -48,14 +49,13 @@ class Player(object):
 
 class RoomScene(Scene):
 
-    def __init__(self, identifier, welcome_data, instructions_file):
+    def __init__(self, identifier, welcome_data):
         super(RoomScene, self).__init__(identifier)
         self.output_buffer = StringIO()
         self.player = None
         self.commands = []
         self.append_all_regex_to_commands()
         self.welcome_data = welcome_data
-        self.instructions_file = instructions_file
 
     def append_all_regex_to_commands(self):
         self.append_look_regex_to_commands()
@@ -104,18 +104,11 @@ class RoomScene(Scene):
 
     def update(self, update_context):
         self.output_buffer = StringIO()
-        update_context["input_fob"] = StringIO()
-        command = '#'
-        while command.startswith('#'):
-            command = self.instructions_file.readline().strip()
-        print("Travis-CI Command: "+command)
-        update_context["input_fob"].write(command)
         self.process_command(update_context)
         self.output_buffer.write("\n")
         self.output_buffer.seek(0)
 
     def process_command(self, update_context):
-        update_context["input_fob"].seek(0)
         commandText = update_context["input_fob"].readline().strip()
         for expression, command in self.commands:
             match = expression.match(commandText)
@@ -333,14 +326,13 @@ class GameOverScene(Scene):
 
 
 class TitleScene(Scene):
-    def __init__(self, identifier, instructions_file):
+    def __init__(self, identifier):
         super(TitleScene, self).__init__(identifier)
-        self.commands = [(re.compile("^quit game$"), self.quit_game_command),
-                         (re.compile("^1$"), self.start_game),
+        self.commands = [(re.compile("^quit game"), self.quit_game_command),
+                         (re.compile("^1"), self.start_game),
                          ]
         self.output_buffer = StringIO()
         self.welcome_data = None
-        self.instructions_file = instructions_file
 
     @staticmethod
     def quit_game_command(update_context, match):
@@ -365,17 +357,11 @@ class TitleScene(Scene):
 
     def update(self, update_context):
         self.output_buffer = StringIO()
-        command = '#'
-        while command.startswith('#'):
-            command = self.instructions_file.readline().strip()
-        print(command)
-        update_context["input_fob"].write(command)
         self.process_command(update_context)
         self.output_buffer.write("\n")
         self.output_buffer.seek(0)
 
     def process_command(self, update_context):
-        update_context["input_fob"].seek(0)
         commandText = update_context["input_fob"].readline().strip()
         for expression, command in self.commands:
             match = expression.match(commandText)
@@ -386,7 +372,7 @@ class TitleScene(Scene):
 
     def start_game(self, update_context, match):
         print(self.welcome_data["game_start"])
-        room = RoomScene("RoomScene", self.welcome_data, self.instructions_file)
+        room = RoomScene("RoomScene", self.welcome_data)
         game.register_new_scene(room)
         game.push_scene_on_stack(room.get_identifier())
 
@@ -402,22 +388,10 @@ class TitleScene(Scene):
         return False
 
 
-class InstructionReader(object):
-    def __init__(self):
-        self.instruction_file = self.open_instruction_file()
-
-    @staticmethod
-    def open_instruction_file():
-        return open("instructions.txt", "r")
-
-    def readline(self):
-        return self.instruction_file.readline()
-
-
 if __name__ == "__main__":
     world_data = {}
     stdout = sys.stdout
-    stdin = StringIO()
+    stdin = sys.stdin
 
     with open("rooms.json") as f:
         world_data = load(f)
