@@ -84,7 +84,7 @@ class TestGame(TestCase):
         self.game.push_scene_on_stack(self.scenetwo.get_identifier())
 
         self.game.pop_scene_from_stack()
-        self.assertRaises(Game.GameExitException, self.game.pop_scene_from_stack)
+        self.assertRaises(SystemExit, self.game.pop_scene_from_stack)
 
     def test_name_of_top_scene(self):
         self.game.register_new_scene(self.scenetwo)
@@ -163,7 +163,7 @@ class TestScene(TestCase):
 
     def test_if_coupling_between_scene_and_game_works(self):
             game = self.setup_mock_up_scene()
-            self.run_mainloop(game)
+            self.assertRaises(SystemExit, game.get_top_scene().update, None)
 
     def setup_mock_up_scene(self):
         update_context, render_context = self.setup_contexts()
@@ -220,9 +220,7 @@ class MockUpScene(Scene):
         pass
 
     def update(self, update_context):
-        logger.info("Size of Stack: " + str(self.game.size_of_stack()))
-        logger.info("Update of Scene: " + str(self.get_identifier()))
-        self.game.pop_scene_from_stack()
+        exit(0)
 
     def render(self, render_context):
         pass
