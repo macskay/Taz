@@ -55,7 +55,8 @@ class GameFactoryTestCase(TestCase):
         self.assertEqual(len(world_data["rooms"]), 1)
         first_room = world_data["rooms"][0]
         self.assertIn("name", first_room)
-        self.assertIn("objects", first_room)
+        self.assertIn("look_objects", first_room)
+        self.assertIn("take_objects", first_room)
 
     def test_should_put_a_player_instance_on_the_room_scene(self):
         self.assertIsNotNone(self.game.registered_scenes["room"].player)
@@ -86,7 +87,8 @@ class GameFactoryTestCase(TestCase):
         return [{
             "name": "room",
             "description": "This is test room",
-            "objects": dict()
+            "look_objects": dict(),
+            "take_objects" : dict()
         }]
 
 
@@ -135,7 +137,8 @@ class RoomSceneTestCase(TestCase):
         return [{
             "name": "room",
             "description": "This is test room",
-            "objects": dict()
+            "look_objects": dict(),
+            "take_objects" : dict()
         }]
 
 
@@ -183,6 +186,8 @@ class RoomSceneCommandTestCase(TestCase):
     def test_look_at(self):
         self.process_command("look at Unit Test")
         self.assertOutputContains("It appears... useful")
+        self.process_command("look at JUnit Test")
+        self.assertOutputContains("It appears... not so useful")
 
     def test_look_at_nothing(self):
         self.process_command("look at nothing")
@@ -210,14 +215,17 @@ class RoomSceneCommandTestCase(TestCase):
         self.process_command("take")
         self.assertOutputContains("'Take what?!'")
 
-    def test_take_an_item(self):
+    def test_take_a_valid_item(self):
         self.process_command("take Unit Test")
-        self.assertOutputContains("Travis takes Unit Test and puts it in his inventory")
+        self.assertOutputContains("Unit Test taken")
         self.assertEqual(len(self.scene.player.inventory), 1)
 
     def test_take_an_invalid_item(self):
         self.process_command("take non-TTDt program")
         self.assertOutputContains("There is no non-TTDt program, which Travis can put in his inventory")
+        self.process_command("take JUnit Test")
+        self.assertOutputContains("JUnit Test not taken")
+        self.assertEqual(len(self.scene.player.inventory), 0)
 
     def test_if_item_taken_twice_raise_error(self):
         self.process_command("take Unit Test")
@@ -287,7 +295,6 @@ class RoomSceneCommandTestCase(TestCase):
             "take_item": "Travis takes %s and puts it in his inventory",
             "item_already_in_inv": "This item is already in Travis' inventory",
             "item_missing": "Item missing",
-            "all_items_collected": "All items collected. Ready to build lawnmower",
             "start_assembling": "Alright! Let's build Remote-Lawnmower-Ultra 3000 (TM)",
             "assemble_room": "room",
             "wrong_room_to_assemble": "Travis seem to have all the items he needs, but this is not the right place",
@@ -297,8 +304,8 @@ class RoomSceneCommandTestCase(TestCase):
             "no_mower": "You have no lawn mower",
             "start_mowing": "Alright! LET'S GET READY TO RUMBLE!",
             "all_items": {
-                1: "Unit Test",
-                2: "IRCbot"
+                "1": "Unit Test",
+                "2": "IRCbot"
             }
         }
 
@@ -306,19 +313,27 @@ class RoomSceneCommandTestCase(TestCase):
         return [{
             "name": "room",
             "description": "This is test room",
-            "objects": {
+            "take_objects": {
+                "Unit Test": "Unit Test taken",
+                "JUnit Test": "JUnit Test not taken",
+            },
+            "look_objects": {
+                "JUnit Test": "It appears... not so useful",
                 "Unit Test": "It appears... useful"
             },
             "exits": {
-                1: "room 2"
+                "1": "room 2"
             }
         },  {
             "name": "room 2",
             "description": "This is the second test room",
-            "objects": {
+            "take_objects": {
+                "IRCbot": "It appears....not useful"
+            },
+            "look_objects": {
                 "IRCbot": "It appears....not useful"
             },
             "exits": {
-                1: "room"
+                "1": "room"
             }
         }]

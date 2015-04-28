@@ -100,13 +100,21 @@ class RoomScene(Scene):
     def take_an_item_command(self, update_context, match):
         current_room = self.get_current_room(update_context)
         item_to_take = match.group("item")
-        for key, value in current_room["objects"].items():
-            if self.can_take_item(key, item_to_take):
-                self.take_item_if_not_already_taken(key, item_to_take, update_context)
+        config = update_context["world_data"]["config"]
+        for key, value in current_room["take_objects"].items():
+            if self.can_take_item(key, item_to_take, update_context):
+                if self.is_item_needed_for_lawnmower(item_to_take, config):
+                    self.take_item_if_not_already_taken(key, item_to_take, update_context)
+                else:
+                    self.output_buffer.write(current_room["take_objects"][item_to_take])
                 break
         else:
             config = update_context["world_data"]["config"]
             self.output_buffer.write(config["invalid_item"] % item_to_take)
+
+    @staticmethod
+    def is_item_needed_for_lawnmower(item_to_take, config):
+        return item_to_take in config["all_items"].values()
 
     def build_lawnmower_command(self, update_context, match):
         config = update_context["world_data"]["config"]
@@ -166,11 +174,11 @@ class RoomScene(Scene):
         return key == item_to_take
 
     def take_item(self, key, item_to_take, update_context):
-        self.player.inventory.append(key)
-        config = update_context["world_data"]["config"]
-        self.output_buffer.write(config["take_item"] % item_to_take)
+        current_room = self.get_current_room(update_context)
+        self.player.add_item_to_inventory(item_to_take)
+        self.output_buffer.write(current_room["take_objects"][item_to_take])
 
-    def can_take_item(self, key, item_to_take):
+    def can_take_item(self, key, item_to_take, update_context):
         if self.is_item_in_room(key, item_to_take):
             return True
         return False
@@ -189,7 +197,7 @@ class RoomScene(Scene):
         self.look_around(update_context)
 
     def look_up_and_write_object_to_buffer(self, room, what):
-        obj = next((value for key, value in room["objects"].items() if key == what))
+        obj = next((value for key, value in room["look_objects"].items() if key == what))
         self.output_buffer.write(obj)
 
     def write_invalid_look_to_buffer(self, update_context):
