@@ -13,4 +13,4 @@ notifications:
   on_failed: always
 script:
   - nosetests tests
-  - python ./integrationstests/remotelawnmowerultra.py
+  - python integrationstests/remotelawnmowerultra.py
