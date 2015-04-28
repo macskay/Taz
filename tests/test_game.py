@@ -163,7 +163,10 @@ class TestScene(TestCase):
 
     def test_if_coupling_between_scene_and_game_works(self):
             game = self.setup_mock_up_scene()
-            self.assertRaises(SystemExit, game.get_top_scene().update, None)
+            try:
+                game.enter_mainloop()
+            except SystemExit:
+                pass
 
     def setup_mock_up_scene(self):
         update_context, render_context = self.setup_contexts()
@@ -220,7 +223,7 @@ class MockUpScene(Scene):
         pass
 
     def update(self, update_context):
-        exit(0)
+        self.game.pop_scene_from_stack()
 
     def render(self, render_context):
         pass

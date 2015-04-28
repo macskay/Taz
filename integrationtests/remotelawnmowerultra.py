@@ -8,8 +8,35 @@ from json import load, loads
 from taz.game import Game, Scene
 
 
-class Player(object):
+class GameFactory(object):
+    class MissingStartingRoom(Exception):
+        pass
 
+    def __init__(self, input_fob, output_fob, world_data):
+        self.output_fob = output_fob
+        self.input_fob = input_fob
+        self.world_data = world_data
+
+    def create(self, start_scene_name):
+        game = Game(self.get_update_context(), self.get_render_context())
+        title_scene = TitleScene(start_scene_name)
+        game.register_new_scene(title_scene)
+        game.push_scene_on_stack(start_scene_name)
+        return game
+
+    def get_update_context(self):
+        return {
+            "world_data": self.world_data,
+            "input_fob": self.input_fob
+        }
+
+    def get_render_context(self):
+        return {
+            "output_fob": self.output_fob
+        }
+
+
+class Player(object):
     def __init__(self):
         self.room_id = None
         self.inventory = []
@@ -24,22 +51,43 @@ class RoomScene(Scene):
         super(RoomScene, self).__init__(identifier)
         self.output_buffer = StringIO()
         self.player = None
-        self.commands = [(re.compile("^look$"), self.look_command),
-                         (re.compile("^look at (?P<what>.+)$"), self.look_at_command),
-                         (re.compile("^look (?P<what>.+)$"), self.look_at_command),
-                         (re.compile("^go$"), self.go_command),
-                         (re.compile("^go in (?P<direction>.+)$"), self.go_in_a_room_command),
-                         (re.compile("^take$"), self.take_command),
-                         (re.compile("^take (?P<item>.+)$"), self.take_an_item_command),
-                         (re.compile("^build lawnmower$"), self.build_lawnmower_command),
-                         (re.compile("^mow lawn$"), self.mow_lawn_command),
-                         (re.compile("^show inv$"), self.show_inventory_command),
-                         (re.compile("^show inventory$"), self.show_inventory_command),
-                         (re.compile("^quit game$"), self.quit_game_command),
-                         (re.compile("^help$"), self.help_command),
-                         (re.compile("^show exits$"), self.show_exits_command),
-                         ]
+        self.commands = []
+        self.append_go_regex_to_commands()
         self.welcome_data = welcome_data
+
+    def append_regex_to_commands(self):
+        self.append_look_regex_to_commands()
+        self.append_go_regex_to_commands()
+        self.append_take_regex_to_commands()
+        self.append_lawnmower_regex_to_commands()
+        self.append_inventory_regex_to_commands()
+        self.append_help_quit_exits_regex_to_commands()
+
+    def append_look_regex_to_commands(self):
+        self.commands.append((re.compile("^look$"), self.look_command))
+        self.commands.append((re.compile("^look at (?P<what>.+)$"), self.look_at_command))
+        self.commands.append((re.compile("^look (?P<what>.+)$"), self.look_at_command))
+
+    def append_go_regex_to_commands(self):
+        self.commands.append((re.compile("^go$"), self.go_command))
+        self.commands.append((re.compile("^go in (?P<direction>.+)$"), self.go_in_a_room_command))
+
+    def append_take_regex_to_commands(self):
+        self.commands.append((re.compile("^take$"), self.take_command))
+        self.commands.append((re.compile("^take (?P<item>.+)$"), self.take_an_item_command))
+
+    def append_lawnmower_regex_to_commands(self):
+        self.commands.append((re.compile("^build lawnmower$"), self.build_lawnmower_command))
+        self.commands.append((re.compile("^mow lawn$"), self.mow_lawn_command))
+
+    def append_inventory_regex_to_commands(self):
+        self.commands.append((re.compile("^show inv$"), self.show_inventory_command))
+        self.commands.append((re.compile("^show inventory$"), self.show_inventory_command))
+
+    def append_help_quit_exits_regex_to_commands(self):
+        self.commands.append((re.compile("^quit game$"), self.quit_game_command))
+        self.commands.append((re.compile("^help$$"), self.help_command))
+        self.commands.append((re.compile("^show exits$"), self.show_exits_command))
 
     def initialize_scene(self):
         self.player = Player()
@@ -247,6 +295,7 @@ class RoomScene(Scene):
         for line in self.output_buffer:
             output_fob.write(line)
 
+
 class GameOverScene(Scene):
     def __init__(self, identifier):
         super(GameOverScene, self).__init__(identifier)
@@ -272,35 +321,6 @@ class GameOverScene(Scene):
     @staticmethod
     def quit_game_command(update_context, match):
         raise Game.GameExitException
-
-
-class GameFactory(object):
-
-    class MissingStartingRoom(Exception):
-        pass
-
-    def __init__(self, input_fob, output_fob, world_data):
-        self.output_fob = output_fob
-        self.input_fob = input_fob
-        self.world_data = world_data
-
-    def create(self, start_scene_name):
-        game = Game(self.get_update_context(), self.get_render_context())
-        title_scene = TitleScene(start_scene_name)
-        game.register_new_scene(title_scene)
-        game.push_scene_on_stack(start_scene_name)
-        return game
-
-    def get_update_context(self):
-        return {
-            "world_data": self.world_data,
-            "input_fob": self.input_fob
-        }
-
-    def get_render_context(self):
-        return {
-            "output_fob": self.output_fob
-        }
 
 
 class TitleScene(Scene):

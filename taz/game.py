@@ -8,7 +8,6 @@ from sys import exit
 class Game(object):
     class GameExitException(Exception):
         def __init__(self):
-            print("Game will be quit!")
             exit(0)
 
     class StackEmptyError(Exception):
