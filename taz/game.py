@@ -1,14 +1,14 @@
 # -*- encoding: UTF-8 -*-
 __author__ = 'Max'
 
-from os import sys
 from abc import ABCMeta, abstractmethod
+from sys import exit
 
 
 class Game(object):
     class GameExitException(Exception):
         def __init__(self):
-            pass
+            exit(0)
 
     class StackEmptyError(Exception):
         def __init__(self):
@@ -30,9 +30,12 @@ class Game(object):
         self.render_context = rc
 
     def enter_mainloop(self):
-        while True:
-            self.get_top_scene().update(self.update_context)
-            self.get_top_scene().render(self.render_context)
+        try:
+            while True:
+                self.get_top_scene().update(self.update_context)
+                self.get_top_scene().render(self.render_context)
+        except SystemExit:
+            pass
 
     def register_new_scene(self, scene):
         if self.is_scene_already_registered(scene):

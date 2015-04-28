@@ -1,0 +1,69 @@
+#
+#  These are the instructions for Travis-CI and Remote-Lawnmower-Ultra
+#
+1
+look
+look at Alarm Clock
+look at Bed
+look at Closet
+take N64 Controller
+show inventory
+show exits
+go in Kitchen
+go in Office
+look at Megan Fox Poster
+take Megan Fox Poster
+look at Computer
+take Computer
+take Hot Glue
+show inventory
+show exits
+go in Kitchen
+look at Sink
+take Sink
+look at Microwave
+take Microwave
+take Battery
+show inventory
+show exits
+go in Garage
+look at Ladder
+look at Workbench
+take Nails
+take Duct Tape
+show inv
+show exits
+go in Kitchen
+show exits
+go in Living Room
+look at Wife
+take Wife
+look at TV
+take TV
+take Antenna
+show inv
+show exits
+go in Backyard
+look at Gnomes
+look at Rusty Rake
+take Gnomes
+take Rusty Rake
+look at Tools
+take Tools
+take Screw-Driver
+show inv
+show exits
+go in Shed
+look at Hole
+look at Grillmaster
+take Grillmaster
+take Armadillos
+show inv
+show exits
+go in Backyard
+build lawnmower
+go in Shed
+build lawnmower
+mow lawn
+go in Backyard
+mow lawn

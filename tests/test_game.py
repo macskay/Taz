@@ -4,7 +4,6 @@ __author__ = 'Max'
 from unittest import TestCase
 from logging import getLogger, basicConfig, INFO
 from taz.game import Game, Scene
-from os.path import join
 
 logger = getLogger(__name__)
 basicConfig(level=INFO, format=' Log: - %(message)s')
@@ -12,8 +11,8 @@ basicConfig(level=INFO, format=' Log: - %(message)s')
 
 class TestGame(TestCase):
     def setUp(self):
-        dict = {}
-        self.game = Game(dict, dict)
+        self.dict = {}
+        self.game = Game(self.dict, self.dict)
         self.sceneone = MockUpScene("TestScene1")
         self.scenetwo = MockUpScene("TestScene2")
         self.scenethree = MockUpScene("TestScene3")
@@ -25,8 +24,7 @@ class TestGame(TestCase):
         self.scenethree = 0
 
     def test_if_game_can_be_created(self):
-        dict = {}
-        self.assertIsNotNone(Game(dict, dict))
+        self.assertIsNotNone(Game(self.dict, self.dict))
 
     def test_if_stack_is_empty(self):
         self.assertTrue(self.game.is_stack_empty())
@@ -86,7 +84,7 @@ class TestGame(TestCase):
         self.game.push_scene_on_stack(self.scenetwo.get_identifier())
 
         self.game.pop_scene_from_stack()
-        self.assertRaises(Game.GameExitException, self.game.pop_scene_from_stack)
+        self.assertRaises(SystemExit, self.game.pop_scene_from_stack)
 
     def test_name_of_top_scene(self):
         self.game.register_new_scene(self.scenetwo)
@@ -191,10 +189,7 @@ class TestScene(TestCase):
         return uc, rc
 
     def run_mainloop(self, game):
-        try:
-            game.enter_mainloop()
-        except Game.GameExitException:
-            logger.info("Taz terminates, since last scene has been popped from the stack")
+        game.enter_mainloop()
 
     def create_mock_up_scene_objects(self):
         scene1 = MockUpScene("FirstMockUpScene")
@@ -222,8 +217,6 @@ class MockUpScene(Scene):
         pass
 
     def update(self, update_context):
-        logger.info("Size of Stack: " + str(self.game.size_of_stack()))
-        logger.info("Update of Scene: " + str(self.get_identifier()))
         self.game.pop_scene_from_stack()
 
     def render(self, render_context):
