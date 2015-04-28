@@ -5,9 +5,12 @@ from StringIO import StringIO
 from os import sys, system
 from json import load, loads
 from argparse import ArgumentParser
+from os.path import abspath, join, split
 
 from taz.game import Game, Scene
 
+INSTRUCTIONS_FILE_PATH = join(abspath(split(__file__)[0]), "instructions.txt")
+print(INSTRUCTIONS_FILE_PATH)
 
 class GameFactory(object):
     
@@ -412,7 +415,7 @@ class InstructionReader(object):
 
     @staticmethod
     def open_instruction_file():
-        return open("instructions.txt", "r")
+        return open(INSTRUCTIONS_FILE_PATH, "r")
 
     def readline(self):
         return self.instruction_file.readline()
