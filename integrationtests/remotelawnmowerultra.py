@@ -7,10 +7,15 @@ from json import load, loads
 from argparse import ArgumentParser
 from os.path import abspath, join, split
 
+SCRIPT_DIR = abspath(split(__file__)[0])
+INSTRUCTIONS_FILE_PATH = join(SCRIPT_DIR, "instructions.txt")
+ROOMS_FILE_PATH = join(SCRIPT_DIR, "rooms.json")
+WELCOME_FILE_PATH = join(SCRIPT_DIR, "welcome.json")
+
+sys.path.append(abspath(join(SCRIPT_DIR, "..")))
+
 from taz.game import Game, Scene
 
-INSTRUCTIONS_FILE_PATH = join(abspath(split(__file__)[0]), "instructions.txt")
-print(INSTRUCTIONS_FILE_PATH)
 
 class GameFactory(object):
     
@@ -323,7 +328,7 @@ class GameOverScene(Scene):
         pass
 
     def initialize_scene(self):
-        with open("welcome.json") as f:
+        with open(WELCOME_FILE_PATH) as f:
             welcome_data = load(f)
         print(welcome_data["outro"])
 
@@ -361,7 +366,7 @@ class TitleScene(Scene):
             output_fob.write(line)
 
     def initialize_scene(self):
-        with open("welcome.json") as f:
+        with open(WELCOME_FILE_PATH) as f:
             welcome_data = load(f)
         self.welcome_data = welcome_data
         self.show_welcome_message(welcome_data)
@@ -450,7 +455,7 @@ if __name__ == "__main__":
     stdout = sys.stdout
     stdin = StringIO()
 
-    with open("rooms.json") as f:
+    with open(ROOMS_FILE_PATH) as f:
         world_data = load(f)
 
     game_factory = GameFactory(stdin, stdout, world_data)
