@@ -3,6 +3,7 @@ Introduction
 
 What is Taz?
 ------------
+Uhmm..Awesome?
 
 What is a game loop?
 --------------------
