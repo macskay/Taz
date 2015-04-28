@@ -418,6 +418,30 @@ class InstructionReader(object):
         return self.instruction_file.readline()
 
 
+class StdinReader(object):
+
+    def readline(self):
+        return sys.stdin.readline()
+
+
+def get_arguments():
+    parser = get_argument_parser()
+    return parser.parse_args()
+
+
+def get_argument_parser():
+    parser = ArgumentParser("remotelawnmowerultra.py")
+    parser.add_argument("--manual", action="store_true", default=False)
+    return parser
+
+def set_reader(game_factory):
+    args = get_arguments()
+    if args.manual:
+        game_factory.InstructionReaderClass = StdinReader
+    else:
+        game_factory.InstructionReaderClass = InstructionReader
+    
+
 if __name__ == "__main__":
     world_data = {}
     stdout = sys.stdout
@@ -426,7 +450,8 @@ if __name__ == "__main__":
     with open("rooms.json") as f:
         world_data = load(f)
 
-    gameFactory = GameFactory(stdin, stdout, world_data)
-    gameFactory.InstructionReaderClass = InstructionReader
-    game = gameFactory.create("TitleScreen")
+    game_factory = GameFactory(stdin, stdout, world_data)
+    set_reader(game_factory)
+        
+    game = game_factory.create("TitleScreen")
     game.enter_mainloop()
