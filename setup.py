@@ -13,7 +13,7 @@ setup(name="Taz",
       url="https://github.com/mkli90/Taz",
       long_description="For a longer description see our GitHub-Page",
       package_data={
-          'tmz': ['LICENSE', 'README.md']
+          'tmz': ['LICENSE']
       },
       classifiers=[
           "Intended Audience :: Developer",
