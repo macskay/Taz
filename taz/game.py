@@ -2,12 +2,14 @@
 __author__ = 'Max'
 
 from abc import ABCMeta, abstractmethod
+from sys import exit
 
 
 class Game(object):
     class GameExitException(Exception):
         def __init__(self):
-            pass
+            print("Game will be quit!")
+            exit(0)
 
     class StackEmptyError(Exception):
         def __init__(self):

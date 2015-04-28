@@ -63,13 +63,7 @@ class GameFactoryTestCase(TestCase):
 
     def test_game_factory_raises_if_missing_starting_room(self):
         with self.assertRaises(GameFactory.MissingStartingRoom):
-            game = GameFactory(None, None, dict()).create()
-
-    def get_test_update_context(self):
-        return {
-            "input_fob": StringIO(),
-            "world_data": self.get_test_world_data()
-        }
+            GameFactory(None, None, dict()).create()
 
     def get_test_world_data(self):
         return {
@@ -88,7 +82,7 @@ class GameFactoryTestCase(TestCase):
             "name": "room",
             "description": "This is test room",
             "look_objects": dict(),
-            "take_objects" : dict()
+            "take_objects": dict()
         }]
 
 
@@ -108,11 +102,6 @@ class RoomSceneTestCase(TestCase):
     def test_render_should_write_to_output_buffer(self):
         self.scene.render(self.context)
         self.assertEqual("line one\nline two", self.stdout.getvalue())
-
-    def test_output_buffer_should_not_accumulate(self):
-        self.scene.render(self.context)
-        self.scene.update(self.update_context)
-        self.assertEqual(0, len(self.scene.output_buffer.getvalue()))
 
     def get_test_update_context(self):
         return {
@@ -138,7 +127,7 @@ class RoomSceneTestCase(TestCase):
             "name": "room",
             "description": "This is test room",
             "look_objects": dict(),
-            "take_objects" : dict()
+            "take_objects": dict()
         }]
 
 
@@ -177,7 +166,7 @@ class RoomSceneCommandTestCase(TestCase):
         self.update_context["input_fob"] = self.stdin
 
     def assertOutputContains(self, message):
-        self.assertEqual(message, self.stdout.getvalue())
+        self.assertEqual(message + '\n', self.stdout.getvalue())
 
     def test_look(self):
         self.process_command("look")
@@ -276,6 +265,14 @@ class RoomSceneCommandTestCase(TestCase):
         self.process_command("go in room 2")
         self.process_command("mow lawn")
         self.assertOutputContains("Alright! LET'S GET READY TO RUMBLE!")
+
+    def test_show_inventory(self):
+        self.process_command("take Unit Test")
+        self.process_command("show inventory")
+        self.assertOutputContains(str(self.scene.player.inventory))
+
+    def test_quit_game(self):
+        self.process_command("quit game")
 
     def get_test_command_world_data(self):
         return {

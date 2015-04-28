@@ -3,7 +3,7 @@
       "starting-room": "Bedroom",
       "invalid_command": "'I can't do that!",
       "invalid_look": "'I will most certainly not look that way!'",
-      "invalid_room": "There is no spoon..oops..There is no %s",
+      "invalid_room": "There is no spoon..oops..There is no %s reachable from this room",
       "invalid_item": "There is no %s, which Travis can put in his inventory",
       "default_go": "'Go where?!'",
       "default_take": "'Take what?!'",
@@ -16,8 +16,9 @@
       "lawnmower": "Remote-Lawnmower-Ultra 3000 (TM)",
       "lawn_room": "Backyard",
       "lawn_invalid_room": "The lawnmower is ready, but Travis can't mow in here",
-      "no_mower": "Travis has no lawn mower...What do you think this game is about? If Travis could mow there would be no game to play...",
+      "no_mower": "Travis has no lawn mower...What do you think this game is about? If Travis could mow here, there would be no game to play...",
       "start_mowing": "Alright! LET'S GET READY TO RUMBLE!",
+      "can_go_to": "From this room Travis can go to following rooms:\n%s",
       "all_items": {
         "1": "Screw-Driver",
         "2": "Armadillos",
@@ -26,23 +27,24 @@
         "5": "Antenna",
         "6": "Battery",
         "7": "N64 Controller"
-      }
+      },
+      "help" : "The following commands are available:\nlook [at <Item>],\ntake <Item>,\ngo in <Room>,\nshow inv/inventory,\nmow lawn,\nbuild lawnmower\nquit game\n(All Items/Rooms need to be spelled with a capital letter at the beginning, e.g go in Kitchen or take Bed)"
 
     },
     "rooms": [
     {
 	"name": "Backyard",
-	"description": "This is the backyard. There is the lawn, which desperately cries for attention and wants to get cut.\nThers is a rusty rake and for some reason a bunch of gnomes. They seem to argue over something, but Travis can't hear what they talk about. Travis can also see the stack of tools he carelessly piled up over the last few months.",
+	"description": "This is the backyard. There is the lawn, which desperately cries for attention and wants to get cut.\nThers is a rusty rake and for some reason a bunch of gnomes.\nThey seem to argue over something, but Travis can't hear what they talk about.\nTravis can also see the stack of tools he carelessly piled up over the last few months.",
 	"item": "Screw-Driver",
 	"look_objects": {
 	    "Rusty Rake": "A rusty rake lies partially hidden in the overgrown grass which you need to cut.",
-        "Gnomes" : "Travis gets closer and overhears that the red-faced gnome is angry, because the referee-gnome didn't give him a well deserved penalty kick. They seem to play some kind of soccer. Travis decides to better leave them alone.",
-        "Tools" : "That is a huge pile of tools. Most of the tools are rusty or broken. But there is one Screw-Driver, which seems to be just right!"
+        "Gnomes" : "Travis gets closer and overhears that the red-faced gnome is angry,\nbecause the referee-gnome didn't give him a well deserved penalty kick.\nThey seem to play some kind of soccer.\nTravis decides to better leave them alone.",
+        "Tools" : "That is a huge pile of tools. Most of the tools are rusty or broken.\nBut there is one Screw-Driver, which seems to be just right!"
 	},
     "take_objects": {
 	    "Rusty Rake": "This rusty rake is of no interest. Travis doesn't want to take it with him.",
         "Gnomes" : "Travis can't take a gnome with him. They seem vicious.",
-        "Screw-Driver" : "After searching through the pile of tools, Travis finds a Screw-Driver and puts it in his inventory.",
+        "Screw-Driver" : "After searching through the pile of tools,\nTravis finds a Screw-Driver and puts it in his inventory.",
         "Tools" : "Travis can't take all tools. But there is a screw-driver sticking out!"
 	},
 	"exits": {
@@ -51,7 +53,7 @@
 	}
     }, {
 	"name": "Garage",
-	"description": "Travis is in the garage. There is a lot of stuff lying all over the place. But there is one place in this garage which is spotless! The area around the car is sterile. The new Audi A8 is standing right in front of Travis. He seems to fade away in yearning. You better give him something to do. Other than the car, there is a ladder and a small workbench in this garage.",
+	"description": "Travis is in the garage.\nThere is a lot of stuff lying all over the place. But there is one place in this garage which is spotless!\nThe area around the car is sterile. The new Audi A8 is standing right in front of Travis.\nHe seems to fade away in yearning. You better give him something to do. Other than the car, there is a ladder and a small workbench in this garage.",
 	"item": "Duct Tape",
     "look_objects": {
         "Car":"The new Audi A8. What a car! Travis could look at that all day and all night, if his wife wasn't nagging all time.",
@@ -75,8 +77,9 @@
        "Wife": "Travis eyes his wife. She has lost most of her glance. Now she's here all day long complaining about the neighbors, shoes and other stuff."
     },
     "take_objects": {
-      "TV":"Travis tries to take the whole TV but her wife b**ches about it, so he decides to just take the antenna instead.",
-      "Wife":"Yeah, sure you want Travis to take is wife...but there is no time for that you pervert."
+      "TV":"Travis tries to take the whole TV but her wife b**ches about it...He thinks about taking the antenna, so she would shut up",
+      "Wife":"Yeah, sure you want Travis to take is wife...but there is no time for that you pervert.",
+      "Antenna":"Travis reaches out and takes the antenna with him. He puts the antenna in his inventory."
     },
     "exits": {
       "kitchen" : "Kitchen",
@@ -93,7 +96,8 @@
     },
     "take_objects": {
       "Megan Fox Poster" : "Travis would really like to take that picture and go to the bedroom as usual, but there is no time for that now!",
-      "Computer" : "While Travis is disconnecting the cables and connections the cover on the side falls down and he sees some hot glue inside, so he takes this instead and puts the hot glue in his inventory."
+      "Computer" : "While Travis is disconnecting the cables and connections the cover on the side falls down and he sees some hot glue inside, so he should take this instead.",
+      "Hot Glue" : "Travis takes Hot Glue and puts it in his inventory."
     },
     "exits": {
       "bedroom":"Bedroom",
@@ -101,7 +105,7 @@
 	}
     }, {
 	"name": "Bedroom",
-	"description": "Travis wakes up in the bedroom. He suddenly feels the urge to build a new lawn mower. For this he needs to get some items. So he better gets started. He starts looking around, if there is anything in this room, which would be helpful to build a lawn mower. But there is only a closet, an alarm clock and the bed in here.",
+	"description": "Travis can only see the closet, the alarm clock and the bed in front of him.",
 	"item": "N64 Controller",
     "look_objects": {
       "Closet" : "Travis starts getting up and heads to the closet. As he gets something to dress he finds his long lost N64 controller between his dirty socks. Better take this, before he loses it again.",
@@ -119,7 +123,7 @@
 	}
     }, {
 	"name": "Shed",
-	"description": "The shed is very small and not very clean. But in the chaos there two things sticking out. The huge hole in the ground, which wasn't there the last time Travis went into that shed and the Grillmaster Deluxe Travis bought instead of giving her wife her long overdue face lifting.",
+	"description": "The shed is very small and not very clean.\nBut in the chaos there two things sticking out. The huge hole in the ground,\nwhich wasn't there the last time Travis went into that shed and the Grillmaster Deluxe Travis bought\ninstead of giving her wife her long overdue face lifting.",
 	"item": "Armadillos",
     "look_objects": {
       "Hole":"Travis examines the hole in the ground and finds for armadillos in it. They might be of use!",
@@ -141,8 +145,9 @@
       "Microwave":"This is a pretty old model, but reliable till today. Travis is very grateful for that, otherwise he would have to get a new one of these as well."
     },
     "take_objects": {
-      "Microwave":"Travis opens the lid and finds a battery inside. That might be useful. He takes it and puts it in his inventory.",
-      "Sink":"This would probably the best way to get rid off these dishes, but Travis decides to leave the sink as it is."
+      "Microwave":"Travis opens the lid and finds a battery inside. That might be useful.",
+      "Sink":"This would probably the best way to get rid off these dishes, but Travis decides to leave the sink as it is.",
+      "Battery": "Travis takes the battery and puts it in his inventory"
     },
     "exits": {
       "livingroom" : "Living Room",

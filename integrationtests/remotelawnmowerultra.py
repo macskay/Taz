@@ -2,7 +2,7 @@ __author__ = 'Max'
 
 import re
 from StringIO import StringIO
-from os import sys
+from os import sys, system
 from json import load, loads
 
 from taz.game import Game, Scene
@@ -20,9 +20,9 @@ class Player(object):
 
 class RoomScene(Scene):
 
-    def __init__(self, identifier):
+    def __init__(self, identifier, welcome_data):
         super(RoomScene, self).__init__(identifier)
-        self.output_buffer = None
+        self.output_buffer = StringIO()
         self.player = None
         self.commands = [(re.compile("^look$"), self.look_command),
                          (re.compile("^look at (?P<what>.+)$"), self.look_at_command),
@@ -32,11 +32,19 @@ class RoomScene(Scene):
                          (re.compile("^take$"), self.take_command),
                          (re.compile("^take (?P<item>.+)$"), self.take_an_item_command),
                          (re.compile("^build lawnmower$"), self.build_lawnmower_command),
-                         (re.compile("^mow lawn"), self.mow_lawn_command),
+                         (re.compile("^mow lawn$"), self.mow_lawn_command),
+                         (re.compile("^show inv$"), self.show_inventory_command),
+                         (re.compile("^show inventory$"), self.show_inventory_command),
+                         (re.compile("^quit game$"), self.quit_game_command),
+                         (re.compile("^help$"), self.help_command),
+                         (re.compile("^show exits$"), self.show_exits_command),
                          ]
+        self.welcome_data = welcome_data
 
     def initialize_scene(self):
-        pass
+        self.player = Player()
+        self.player.room_id = self.welcome_data["starting_room"]
+        print(self.welcome_data["intro"])
 
     def resume(self):
         pass
@@ -47,6 +55,7 @@ class RoomScene(Scene):
     def update(self, update_context):
         self.output_buffer = StringIO()
         self.process_command(update_context)
+        self.output_buffer.write("\n")
         self.output_buffer.seek(0)
 
     def process_command(self, update_context):
@@ -135,10 +144,32 @@ class RoomScene(Scene):
         if self.is_lawnmower_in_inventory(config):
             if self.is_room_mowable(current_room["name"], lawn_room):
                 self.output_buffer.write(config["start_mowing"])
+                game_over_scene = GameOverScene("GameOver")
+                game.register_new_scene(game_over_scene)
+                game.push_scene_on_stack(game_over_scene.get_identifier())
             else:
                 self.output_buffer.write(config["lawn_invalid_room"])
         else:
             self.output_buffer.write(config["no_mower"])
+
+    def show_inventory_command(self, update_context, match):
+        self.output_buffer.write(str(self.player.inventory))
+
+    @staticmethod
+    def quit_game_command(update_context, match):
+        raise Game.GameExitException
+
+    def help_command(self, update_context, match):
+        self.output_buffer.write(update_context["world_data"]["config"]["help"])
+
+    def show_exits_command(self, update_context, match):
+        current_room = self.get_current_room(update_context)
+        list_of_exits = []
+        for key, value in current_room["exits"].items():
+            list_of_exits.append(str(value))
+        self.output_buffer.write(update_context["world_data"]["config"]["can_go_to"] % str(list_of_exits))
+
+
 
     @staticmethod
     def is_room_mowable(current_room, lawn_room):
@@ -216,6 +247,32 @@ class RoomScene(Scene):
         for line in self.output_buffer:
             output_fob.write(line)
 
+class GameOverScene(Scene):
+    def __init__(self, identifier):
+        super(GameOverScene, self).__init__(identifier)
+        self.welcome_data = None
+
+    def tear_down(self):
+        pass
+
+    def render(self, render_context):
+        pass
+
+    def initialize_scene(self):
+        with open("welcome.json") as f:
+            welcome_data = load(f)
+        print(welcome_data["outro"])
+
+    def resume(self):
+        pass
+
+    def update(self, update_context):
+        self.quit_game_command(update_context, None)
+
+    @staticmethod
+    def quit_game_command(update_context, match):
+        raise Game.GameExitException
+
 
 class GameFactory(object):
 
@@ -227,13 +284,11 @@ class GameFactory(object):
         self.input_fob = input_fob
         self.world_data = world_data
 
-    def create(self):
+    def create(self, start_scene_name):
         game = Game(self.get_update_context(), self.get_render_context())
-        room_scene = RoomScene("room")
-        game.register_new_scene(room_scene)
-        game.push_scene_on_stack("room")
-        room_scene.player = Player()
-        self.set_starting_room(room_scene.player)
+        title_scene = TitleScene(start_scene_name)
+        game.register_new_scene(title_scene)
+        game.push_scene_on_stack(start_scene_name)
         return game
 
     def get_update_context(self):
@@ -247,19 +302,78 @@ class GameFactory(object):
             "output_fob": self.output_fob
         }
 
-    def set_starting_room(self, player):
-        try:
-            player.room_id = self.world_data["config"]["starting-room"]
-        except KeyError:
-            raise self.MissingStartingRoom()
+
+class TitleScene(Scene):
+    def __init__(self, identifier):
+        super(TitleScene, self).__init__(identifier)
+        self.commands = [(re.compile("^quit game"), self.quit_game_command),
+                         (re.compile("^1"), self.start_game),
+                         ]
+        self.output_buffer = StringIO()
+        self.welcome_data = None
+
+    @staticmethod
+    def quit_game_command(update_context, match):
+        raise Game.GameExitException
+
+    def tear_down(self):
+        pass
+
+    def render(self, render_context):
+        output_fob = render_context["output_fob"]
+        for line in self.output_buffer:
+            output_fob.write(line)
+
+    def initialize_scene(self):
+        with open("welcome.json") as f:
+            welcome_data = load(f)
+        self.welcome_data = welcome_data
+        self.show_welcome_message(welcome_data)
+
+    def resume(self):
+        pass
+
+    def update(self, update_context):
+        self.output_buffer = StringIO()
+        self.process_command(update_context)
+        self.output_buffer.write("\n")
+        self.output_buffer.seek(0)
+
+    def process_command(self, update_context):
+        commandText = update_context["input_fob"].readline().strip()
+        for expression, command in self.commands:
+            match = expression.match(commandText)
+            if self.is_expression_valid(command, match, update_context):
+                break
+        else:
+            self.output_buffer.write(self.welcome_data["invalid_command"])
+
+    def start_game(self, update_context, match):
+        print(self.welcome_data["game_start"])
+        room = RoomScene("RoomScene", self.welcome_data)
+        game.register_new_scene(room)
+        game.push_scene_on_stack(room.get_identifier())
+
+    @staticmethod
+    def show_welcome_message(welcome_data):
+        print(welcome_data["welcome"])
+
+    @staticmethod
+    def is_expression_valid(command, match, update_context):
+        if match:
+            command(update_context, match)
+            return True
+        return False
+
 
 if __name__ == "__main__":
     world_data = {}
     stdout = sys.stdout
     stdin = sys.stdin
 
-    with open("rooms.json") as file:
-        world_data = load(file)
+    with open("rooms.json") as f:
+        world_data = load(f)
 
     gameFactory = GameFactory(stdin, stdout, world_data)
-    game = gameFactory.create()
+    game = gameFactory.create("TitleScreen")
+    game.enter_mainloop()
