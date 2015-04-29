@@ -30,6 +30,7 @@ class Game(object):
         """
         :param update_context: This update_context is passed to the update-function of all scenes
         :param render_context: This render_context is passed to the render-function of all scenes
+
         To construct an instance of this class, a update_context
         and a render_context, depenging on the used underlying
         engine is used. To ensure functionality call the base class' constructor when overriding the __init__-function.
@@ -52,6 +53,7 @@ class Game(object):
         """
         :param scene: This is the scene, which should get registered with the game
         :raises Game.SceneAlreadyRegisteredError: If a scene is registered multiple times an error is raised.
+
         Before a scene can be pushed on the game's stack it must be registered with the game.
         This method should be called right after a scene has been created.
         """
@@ -80,6 +82,7 @@ class Game(object):
         :param ident: This is the string-identifier of the scene.
         :raises Game.NoRegisteredSceneWithThisIDError: If the scene given hasn't been registered with the game this \
         function raises an error.
+
         This function pushes a given scene to the stack. The scene is given by its identifier and must have
         been registered with the game before it can be pushed on top of the state.
         """
@@ -111,6 +114,7 @@ class Game(object):
         :raises Game.StackEmptyError: If the stack is empty and this function is called an error is raised.
         :raises Game.GameExitException: If the last item of an active stack is popped an GameExitException is raised \
         and the game is shut down.
+
         This scene is used pop the current scene from the game's stack. When this is called,
         the scene's tear_down function will get called in order to destroy the scene.
         If the popped scene was on top of another scene, the other scene's resume-function is called,
