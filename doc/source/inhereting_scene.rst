@@ -1,4 +1,4 @@
-Inhereting the "Scene" class
+Inheriting the "Scene" class
 ============================
 This section is describe how to inherit from the Scene class and how to use its methods.
 For an example please scroll down to the end of this section.
@@ -30,8 +30,15 @@ see the following code-block of an example sub-class:
             self.screen = 0
 ..
 
+A Scene's life cycle
+--------------------
+
+.. figure:: scene-event-lifecycle.png
+   :align: center
+
+
 What to put in "initialize"
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This function is called whenever a scene is pushed on top of the game's scene stack
 and should build up a certain scene. In here you might build up a level
 or a main menu and its buttons. Everything that needs to be done when calling the scene
@@ -54,7 +61,7 @@ should be put in here.
 ..
 
 The scenes event cycle
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 In the game's main-loop the scene, which is on top of the scene stack
 is always the active one and its **update**- and **render**-methods are
 called on each and every tick.
@@ -62,7 +69,7 @@ Why are there two functions when you call them right after another you ask?
 You will get an answer n the followeng sub-sections.
 
 Using the Update method
-~~~~~~~~~~~~~~~~~~~~~~~
+_______________________
 The update method is responsible for updating (who would've thought of it) the game's
 or scene's status. It always gets passed the update_context, which is set up on creation of
 the game class.
@@ -90,7 +97,7 @@ basically doing most of the things that happen within a certain scene.
 ..
 
 Using the Render method
-~~~~~~~~~~~~~~~~~~~~~~~
+_______________________
 The render method is the function to get your game to life. It is responsible for and just for drawing/printing everything to your screen.
 It is NOT responsbile for any calculations, as this is update's job. It always gets passed the render_context, which is set up on creation of
 the game class.
@@ -119,7 +126,7 @@ the game class.
 ..
 
 What to put in tear_down and resume
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When leaving a scene there might still be some things to clean up before you can destroy the scene.
 Everything you need to be cleaned up before popping a scene should be put inside the tear_down function.
 
@@ -128,6 +135,7 @@ When returning back to the game you most likely don't want to start over the lev
 left of. In fact Taz implementation allows you to push a scene on top another. When this top scene is then popped again
 the scene following is re-activated and the new top scene. When this happens the resume-function of that scene below the popped one
 is called, so you can put everything in here, which should get re-initiated.
+
 .. code-block:: python
 
     from taz import Game, Scene

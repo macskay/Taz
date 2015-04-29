@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Inhereting the “Scene” class &mdash; Taz 1.0.0b1 documentation</title>
+  <title>Inheriting the “Scene” class &mdash; Taz 1.0.0b1 documentation</title>
   
 
   
@@ -32,7 +32,7 @@
   
     <link rel="top" title="Taz 1.0.0b1 documentation" href="index.html"/>
         <link rel="next" title="Examples" href="examples.html"/>
-        <link rel="prev" title="Inhereting the “Game” class" href="inhereting_game.html"/> 
+        <link rel="prev" title="Using the “Game” class" href="using_game.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -71,19 +71,18 @@
 <li class="toctree-l2"><a class="reference internal" href="intro.html#how-can-taz-help-me-organizing-my-game-code">How can Taz help me organizing my game code?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="inhereting_game.html">Inhereting the &#8220;Game&#8221; class</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#registering-scenes-with-the-game">Registering scenes with the game</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#using-the-scene-stack">Using the scene stack</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#sharing-data-between-all-scenes">Sharing data between all scenes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#how-to-switch-between-scenes">How to switch between scenes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#how-to-integrate-with-a-game-library">How to integrate with a game library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_game.html">Using the &#8220;Game&#8221; class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#what-is-the-game-class">What is the Game class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#instancing-the-game-class">Instancing the Game class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#registering-scenes-with-the-game">Registering scenes with the game</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#using-the-scene-stack">Using the scene stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#sharing-data-between-all-scenes">Sharing data between all scenes</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Inhereting the &#8220;Scene&#8221; class</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Inheriting the &#8220;Scene&#8221; class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#instancing-the-scene-class">Instancing the Scene class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-scene-s-life-cycle">A Scene&#8217;s life cycle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adding-data-to-a-single-scene">Adding data to a single scene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-to-put-in-initialize">What to put in &#8220;initialize&#8221;</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#the-scenes-event-cycle">The scenes event cycle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-to-put-in-teardown">What to put in teardown</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
@@ -120,7 +119,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Inhereting the &#8220;Scene&#8221; class</li>
+    <li>Inheriting the &#8220;Scene&#8221; class</li>
       <li class="wy-breadcrumbs-aside">
         
           <a href="_sources/inhereting_scene.txt" rel="nofollow"> View page source</a>
@@ -131,25 +130,157 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="inhereting-the-scene-class">
-<h1>Inhereting the &#8220;Scene&#8221; class<a class="headerlink" href="#inhereting-the-scene-class" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="adding-data-to-a-single-scene">
-<h2>Adding data to a single scene<a class="headerlink" href="#adding-data-to-a-single-scene" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="inheriting-the-scene-class">
+<h1>Inheriting the &#8220;Scene&#8221; class<a class="headerlink" href="#inheriting-the-scene-class" title="Permalink to this headline">¶</a></h1>
+<p>This section is describe how to inherit from the Scene class and how to use its methods.
+For an example please scroll down to the end of this section.</p>
+<div class="section" id="instancing-the-scene-class">
+<h2>Instancing the Scene class<a class="headerlink" href="#instancing-the-scene-class" title="Permalink to this headline">¶</a></h2>
+<p>After you&#8217;ve setup a game instance, you need some scenes to start your game.
+The scene class gives you basic functionality to start with.
+First of all you need to create a sub-class of Taz&#8217; Scene class and implement
+all its abstract methods. The method names of these abstract methods
+should already give you the idea of their purpose. Even if not, the explanation ffor each and every one of these
+follows in this section.
+However, when you create an object of your sub-scene you need to provide a unique identifier for
+each scene you create. This identifier is used to find this particular scene in the game&#8217;s registered scenes
+as well as to push it on the scene&#8217;s stack. In order to not break the code&#8217;s functionality you need to call
+the super constructor, if you intend to override the scene&#8217;s __init__ method. Too see how this is done
+see the following code-block of an example sub-class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">taz</span> <span class="kn">import</span> <span class="n">Game</span><span class="p">,</span> <span class="n">Scene</span>
+
+<span class="k">class</span> <span class="nc">MyScene</span><span class="p">(</span><span class="n">Scene</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyScene</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">initialize_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="a-scene-s-life-cycle">
+<h2>A Scene&#8217;s life cycle<a class="headerlink" href="#a-scene-s-life-cycle" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center">
+<img alt="_images/scene-event-lifecycle.png" src="_images/scene-event-lifecycle.png" />
 </div>
 <div class="section" id="what-to-put-in-initialize">
-<h2>What to put in &#8220;initialize&#8221;<a class="headerlink" href="#what-to-put-in-initialize" title="Permalink to this headline">¶</a></h2>
+<h3>What to put in &#8220;initialize&#8221;<a class="headerlink" href="#what-to-put-in-initialize" title="Permalink to this headline">¶</a></h3>
+<p>This function is called whenever a scene is pushed on top of the game&#8217;s scene stack
+and should build up a certain scene. In here you might build up a level
+or a main menu and its buttons. Everything that needs to be done when calling the scene
+should be put in here.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">taz</span> <span class="kn">import</span> <span class="n">Game</span><span class="p">,</span> <span class="n">Scene</span>
+
+<span class="k">class</span> <span class="nc">MyScene</span><span class="p">(</span><span class="n">Scene</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyScene</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">initialize_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">Screen</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_nice_map</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="the-scenes-event-cycle">
-<h2>The scenes event cycle<a class="headerlink" href="#the-scenes-event-cycle" title="Permalink to this headline">¶</a></h2>
+<h3>The scenes event cycle<a class="headerlink" href="#the-scenes-event-cycle" title="Permalink to this headline">¶</a></h3>
+<p>In the game&#8217;s main-loop the scene, which is on top of the scene stack
+is always the active one and its <strong>update</strong>- and <strong>render</strong>-methods are
+called on each and every tick.
+Why are there two functions when you call them right after another you ask?
+You will get an answer n the followeng sub-sections.</p>
 <div class="section" id="using-the-update-method">
-<h3>Using the Update method<a class="headerlink" href="#using-the-update-method" title="Permalink to this headline">¶</a></h3>
+<h4>Using the Update method<a class="headerlink" href="#using-the-update-method" title="Permalink to this headline">¶</a></h4>
+<p>The update method is responsible for updating (who would&#8217;ve thought of it) the game&#8217;s
+or scene&#8217;s status. It always gets passed the update_context, which is set up on creation of
+the game class.
+This function should listen and respond to input events, calculate new positions of players,
+basically doing most of the things that happen within a certain scene.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">taz</span> <span class="kn">import</span> <span class="n">Game</span><span class="p">,</span> <span class="n">Scene</span>
+
+<span class="k">class</span> <span class="nc">MyScene</span><span class="p">(</span><span class="n">Scene</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyScene</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">initialize_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">Screen</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_nice_map</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_context</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_input</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">move_player</span><span class="p">(</span><span class="n">update_context</span><span class="p">[</span><span class="s">&quot;deltatime&quot;</span><span class="p">],</span> <span class="n">key</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="using-the-render-method">
-<h3>Using the Render method<a class="headerlink" href="#using-the-render-method" title="Permalink to this headline">¶</a></h3>
+<h4>Using the Render method<a class="headerlink" href="#using-the-render-method" title="Permalink to this headline">¶</a></h4>
+<p>The render method is the function to get your game to life. It is responsible for and just for drawing/printing everything to your screen.
+It is NOT responsbile for any calculations, as this is update&#8217;s job. It always gets passed the render_context, which is set up on creation of
+the game class.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">taz</span> <span class="kn">import</span> <span class="n">Game</span><span class="p">,</span> <span class="n">Scene</span>
+
+<span class="k">class</span> <span class="nc">MyScene</span><span class="p">(</span><span class="n">Scene</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyScene</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">initialize_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">Screen</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_nice_map</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_context</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_input</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">move_player</span><span class="p">(</span><span class="n">update_context</span><span class="p">[</span><span class="s">&quot;deltatime&quot;</span><span class="p">],</span> <span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">render_context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
-<div class="section" id="what-to-put-in-teardown">
-<h2>What to put in teardown<a class="headerlink" href="#what-to-put-in-teardown" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="what-to-put-in-tear-down-and-resume">
+<h3>What to put in tear_down and resume<a class="headerlink" href="#what-to-put-in-tear-down-and-resume" title="Permalink to this headline">¶</a></h3>
+<p>When leaving a scene there might still be some things to clean up before you can destroy the scene.
+Everything you need to be cleaned up before popping a scene should be put inside the tear_down function.</p>
+<p>In some cases you might want to store your current status of a level, e.g. when switching to an options menu.
+When returning back to the game you most likely don&#8217;t want to start over the level but instead keep on playing where you
+left of. In fact Taz implementation allows you to push a scene on top another. When this top scene is then popped again
+the scene following is re-activated and the new top scene. When this happens the resume-function of that scene below the popped one
+is called, so you can put everything in here, which should get re-initiated.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">taz</span> <span class="kn">import</span> <span class="n">Game</span><span class="p">,</span> <span class="n">Scene</span>
+
+<span class="k">class</span> <span class="nc">MyScene</span><span class="p">(</span><span class="n">Scene</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyScene</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">initialize_scene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">Screen</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_nice_map</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_context</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture_input</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">move_player</span><span class="p">(</span><span class="n">update_context</span><span class="p">[</span><span class="s">&quot;deltatime&quot;</span><span class="p">],</span> <span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">render_context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="adding-data-to-a-single-scene">
+<h2>Adding data to a single scene<a class="headerlink" href="#adding-data-to-a-single-scene" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
 </div>
 </div>
 
@@ -162,7 +293,7 @@
         <a href="examples.html" class="btn btn-neutral float-right" title="Examples">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="inhereting_game.html" class="btn btn-neutral" title="Inhereting the “Game” class"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="using_game.html" class="btn btn-neutral" title="Using the “Game” class"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
