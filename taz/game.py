@@ -112,7 +112,7 @@ class Game(object):
     def pop_scene_from_stack(self):
         """
         :raises Game.StackEmptyError: If the stack is empty and this function is called an error is raised.
-        :raises Game.GameExitException: If the last item of an active stack is popped an GameExitException is raised \
+        :raises Game.GameExitException: If the last item of the active stack is popped an GameExitException is raised \
         and the game is shut down.
 
         This scene is used pop the current scene from the game's stack. When this is called,
