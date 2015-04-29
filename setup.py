@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-# -*- encoding: UTF-8 -*-
+# -*- encoding: utf-8 -*-
 
 from setuptools import setup
 
 setup(name="Taz",
-      version="1.0.0",
+      version="1.0.0b1",
       description="Game Stack for managing Scenes",
       author="Max Klingmann <KlingmannM@gmail.com>",
       author_email="KlingmannM@gmail.com",
@@ -17,7 +17,7 @@ setup(name="Taz",
       },
       classifiers=[
           "Intended Audience :: Developer",
-          "Development Status :: 1.0.0",
+          "Development Status :: 1.0.0b1",
           "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
           "Programming Language :: Python :: 2.7.x",
           "Topic :: Games/Entertainment",
