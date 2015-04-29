@@ -23,13 +23,12 @@ Content:
    examples
 
 
-Legal and Contact:
-------------------
+Contact:
+--------
 
 .. toctree::
    :maxdepth: 1
 
-   license
    help
 
 Taz API Documentation
