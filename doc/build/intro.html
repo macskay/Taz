@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; Taz 1.0.0 documentation</title>
+  <title>Introduction &mdash; Taz 1.0.0b1 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="Taz 1.0.0 documentation" href="index.html"/>
+    <link rel="top" title="Taz 1.0.0b1 documentation" href="index.html"/>
         <link rel="next" title="Inhereting the “Game” class" href="inhereting_game.html"/>
         <link rel="prev" title="Taz: Game Loop and Scene Stack" href="index.html"/> 
 
@@ -65,9 +65,9 @@
           
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#what-is-taz">What is Taz?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-a-game-loop">What is a game loop?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-a-scene-stack">What is a scene stack?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-taz">What is Taz?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-can-taz-help-me-organizing-my-game-code">How can Taz help me organizing my game code?</a></li>
 </ul>
 </li>
@@ -92,7 +92,6 @@
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Contact</a></li>
 </ul>
 <ul>
@@ -134,19 +133,117 @@
             
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="what-is-taz">
-<h2>What is Taz?<a class="headerlink" href="#what-is-taz" title="Permalink to this headline">¶</a></h2>
-<p>Uhmm..Awesome?
-Repush!</p>
-</div>
+<p>This section is to inform about the purpose of Taz and some basic
+concepts of game development.</p>
 <div class="section" id="what-is-a-game-loop">
 <h2>What is a game loop?<a class="headerlink" href="#what-is-a-game-loop" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s assume you are playing on of the many shooters out there. On each frame
+the game listens to your commands, like &#8220;move forward&#8221;, &#8220;shoot&#8221;, &#8220;jump&#8221;. The game needs to capture these
+inputs and respond accordingly in letting your character do the respective thing and draw this to your
+screen. But even if you stand still the game keeps drawing the surroindings. There might be still movements
+in your screen, like trees bending in the wind or rain falling from the sky. So the game asks
+for information over and over again.
+This &#8220;asking for information&#8221; is called the game loop. Somewhere in your code there
+will be an pseudo-infinite loop which asks for these <strong>updates</strong> and <strong>renders</strong> them to your screen.
+Of course the game doesn&#8217;t run for an infinite time, so somehow you would have to manage
+to tell the game-loop to stop at a certain point and exit the game, which why I called it <strong>pseudo</strong>-infinite.
+Following an example of such a game loop.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">mainloop</span><span class="p">():</span>
+    <span class="n">delta_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">current_time</span><span class="p">()</span>
+
+        <span class="n">level1</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">delta_time</span><span class="p">)</span>
+        <span class="n">level1</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">current_time</span><span class="p">()</span>
+        <span class="n">delta_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+</pre></div>
+</div>
+<p>This is a very common way to define such a main-loop. In this example the time between each iteration is calculated
+and passed to the update-function.
+Why you should do that can be read here: <a class="reference external" href="https://www.scirra.com/tutorials/67/delta-time-and-framerate-independenc">https://www.scirra.com/tutorials/67/delta-time-and-framerate-independenc</a>
+What exactly you put in the <strong>update</strong>- and <strong>render</strong>-function will be explained
+in the followeing pages. For now it is enough, that you understand the basic functionality about it.</p>
 </div>
 <div class="section" id="what-is-a-scene-stack">
 <h2>What is a scene stack?<a class="headerlink" href="#what-is-a-scene-stack" title="Permalink to this headline">¶</a></h2>
+<p>In the above code-block the game-loop always calls the <strong>update</strong>- and <strong>render</strong>-function of an object called
+level1, which most likely represents the first map of a game. But what if you want to have multiple maps or
+a title scene, with an awesome intro. You would only be able to show these when they are called from within your level1.
+But then level1 would not be responsible for just the first map, but also a lot of other things.
+To make sure you can show as much different levels and menus you want, we would have to alter the code-block to something
+like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">mainloop</span><span class="p">():</span>
+    <span class="n">delta_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">current_time</span><span class="p">()</span>
+
+        <span class="n">current_scene</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">delta_time</span><span class="p">)</span>
+        <span class="n">current_scene</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">current_time</span><span class="p">()</span>
+        <span class="n">delta_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+</pre></div>
+</div>
+<p>Basically, what we did is getting rid off the definite call of the &#8220;level1&#8220;&#8216;s functions and rather tell the game
+to update and draw whatever scene you want the game to currently draw.
+As for now we introduced the term &#8220;scene&#8221;. But what is a scene exactly?
+Well, a scene is pretty much everything you can think of. It can be a title scene, where the mentioned intro is playing.
+It could also be the main menu, any level of your game or even the options menu.
+In each and every scene there are different functionalities, which must be coded and different inputs to be captured.
+In the title scene you might only allow &#8220;Press Esc to skip&#8221;, whereas in the menu you probably wan&#8217;t some buttons capturing
+clicks or you want your character to interact with objects in your level.</p>
+<p>The problem however is to tell the game, which scene specifically to render. You would have to change the <em>current_scene</em>,
+when you want to switch the scenes and that is exactly what is done, when using a scene stack.
+The scene stack represents the currently loaded scenes such as level and an options menu. To decide
+which scene to <strong>update</strong> and <strong>render</strong> the game looks at the stack&#8217;s top scene and calls its <strong>update</strong> and <strong>render</strong>
+function. This way the top pushed scene is always the active scene. When a scene is no longer needed, let&#8217;s say for example
+when you close the options menu and want to get back to the level it gets popped from the stack and new top scene
+is now active again.</p>
+<div class="figure align-center">
+<img alt="_images/scene_stack.png" src="_images/scene_stack.png" />
+</div>
+<p>With that in mind the code-block can be altered once more to the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">mainloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">delta_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">current_time</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_top_scene_of_stack</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">delta_time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_top_scene_of_stack</span><span class="p">()</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">current_time</span><span class="p">()</span>
+        <span class="n">delta_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-is-taz">
+<h2>What is Taz?<a class="headerlink" href="#what-is-taz" title="Permalink to this headline">¶</a></h2>
+<p>Taz is a small library handling the switching of scenes and making sure your scenes get
+updated and rendered on every tick.</p>
+<p>The scenes will be organised in a game stack, which will automatically be updated for all scenes whenever a new scene is
+registered with the Taz library. The user has the opportunity to force scene changes in pushing or
+popping from the game’s stack. Whenever you pop the last stacked scene the game will come to an end.</p>
 </div>
 <div class="section" id="how-can-taz-help-me-organizing-my-game-code">
 <h2>How can Taz help me organizing my game code?<a class="headerlink" href="#how-can-taz-help-me-organizing-my-game-code" title="Permalink to this headline">¶</a></h2>
+<p>Usually when starting from scratch you have to setup the backend of your game first, before you
+can go and implement whatever features your game should have, which means you would have
+to setup the game&#8217;s main-loop and the scene-stack to get going.
+With Taz you have the opportunity to import this backend, so you won&#8217;t have to think about it.
+All you can do is setting up your scenes and get going with the awesome features you have planned.
+Taz provides you with the main-loop and makes sure your scenes are updated on each tick.
+With the library there is a set of just a few functions you will to have worry about.
+These functions include pushing to and popping from the stack as well as registering your
+scene with the game and of course everything to get your scene going.
+You will be provided with a scene base class and all you have to do is implement
+some abstract methods, such as &#8220;initialize&#8221;, &#8220;tear_down&#8221;, &#8220;update&#8221;, &#8220;render&#8221;.
+What these methods are for is shown on the next few pages to get you going with your
+very own &#8220;Taz&#8221;-based game.
+Need another reason: Taz is working independent of any python based library, so whatever
+you are using, be it PyGame, PyOgre, PyOpenGL, Taz will be ready for use after
+setting up a few things.</p>
 </div>
 </div>
 
@@ -189,7 +286,7 @@ Repush!</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0.0',
+            VERSION:'1.0.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
