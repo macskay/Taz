@@ -36,10 +36,10 @@ for example. To see an example let's look at the following code block:
         }
 
         game = Game(update_context, render_context)
-		example_scene = ExampleScene("ExampleScene")
-		game.register_new_scene(example_sccene)
-		game.push_scene_on_stack("ExampleScene")
-		game.enter_mainloop()
+        example_scene = ExampleScene("ExampleScene")
+        game.register_new_scene(example_sccene)
+        game.push_scene_on_stack("ExampleScene")
+        game.enter_mainloop()
 ..
 
 In this case the update and render context just hold the information which input and output to use. This method
