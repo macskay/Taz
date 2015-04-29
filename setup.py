@@ -3,9 +3,9 @@
 
 from setuptools import setup
 
-setup(name="Taz",
+setup(name="tazlib",
       version="1.0.0",
-      description="Game Stack for managing Scenes",
+      description="Taz - Game Stack for managing Scenes",
       author="Max Klingmann <KlingmannM@gmail.com>",
       author_email="KlingmannM@gmail.com",
       packages=['taz'],
