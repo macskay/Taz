@@ -4,7 +4,7 @@
 from setuptools import setup
 
 setup(name="Taz",
-      version="1.0.0b1",
+      version="1.0.0",
       description="Game Stack for managing Scenes",
       author="Max Klingmann <KlingmannM@gmail.com>",
       author_email="KlingmannM@gmail.com",
@@ -17,7 +17,7 @@ setup(name="Taz",
           'tmz': ['LICENSE']
       },
       classifiers=[
-          "Intended Audience :: Developer",
+          "Intended Audience :: Developers",
           "Development Status :: 5 - Production/Stable",
           "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
           "Natural Language :: English",
