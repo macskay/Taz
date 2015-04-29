@@ -18,18 +18,17 @@ Content:
    :maxdepth: 3
 
    intro
-   inhereting_game
+   using_game
    inhereting_scene
    examples
 
 
-Legal and Contact:
-------------------
+Contact:
+--------
 
 .. toctree::
    :maxdepth: 1
 
-   license
    help
 
 Taz API Documentation

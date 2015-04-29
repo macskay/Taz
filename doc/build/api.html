@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Taz API Documentation &mdash; Taz 1.0.0 documentation</title>
+  <title>Taz API Documentation &mdash; Taz 1.0.0b1 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="Taz 1.0.0 documentation" href="index.html"/>
+    <link rel="top" title="Taz 1.0.0b1 documentation" href="index.html"/>
         <link rel="prev" title="Contact" href="help.html"/> 
 
   
@@ -64,18 +64,20 @@
           
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#what-is-taz">What is Taz?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#what-is-a-game-loop">What is a game loop?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#what-is-a-scene-stack">What is a scene stack?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#what-is-taz">What is Taz?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#how-can-taz-help-me-organizing-my-game-code">How can Taz help me organizing my game code?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="inhereting_game.html">Inhereting the &#8220;Game&#8221; class</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#registering-scenes-with-the-game">Registering scenes with the game</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#using-the-scene-stack">Using the scene stack</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#sharing-data-between-all-scenes">Sharing data between all scenes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#how-to-switch-between-scenes">How to switch between scenes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_game.html#how-to-integrate-with-a-game-library">How to integrate with a game library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_game.html">Using the &#8220;Game&#8221; class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#what-is-the-game-class">What is the Game class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#instancing-the-game-class">Instancing the Game class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#registering-scenes-with-the-game">Registering scenes with the game</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#using-the-scene-stack">Using the scene stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#sharing-data-between-all-scenes">Sharing data between all scenes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#how-to-switch-between-scenes">How to switch between scenes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_game.html#how-to-integrate-with-a-game-library">How to integrate with a game library</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="inhereting_scene.html">Inhereting the &#8220;Scene&#8221; class</a><ul>
@@ -91,7 +93,6 @@
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Contact</a></li>
 </ul>
 <ul class="current">
@@ -162,7 +163,7 @@ engine is used. To ensure functionality call the base class&#8217; constructor w
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
 <li><strong>Game.StackEmptyError</strong> &#8211; If the stack is empty and this function is called an error is raised.</li>
-<li><strong>Game.GameExitException</strong> &#8211; If the last item of an active stack is popped an GameExitException is raised         and the game is shut down.</li>
+<li><strong>Game.GameExitException</strong> &#8211; If the last item of the active stack is popped an GameExitException is raised         and the game is shut down.</li>
 </ul>
 </td>
 </tr>
@@ -306,7 +307,7 @@ to be able to call the function through the game stack and identify it in the ga
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0.0',
+            VERSION:'1.0.0b1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

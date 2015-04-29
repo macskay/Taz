@@ -18,7 +18,7 @@ Content:
    :maxdepth: 3
 
    intro
-   inhereting_game
+   using_game
    inhereting_scene
    examples
 
