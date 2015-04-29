@@ -11,6 +11,7 @@ setup(name="Taz",
       packages=['taz'],
       license="GPLv3",
       url="https://github.com/mkli90/Taz",
+      download_url = "https://github.com/mkli90/Taz/tarball/1.0.0",
       long_description="For a longer description see our GitHub-Page",
       package_data={
           'tmz': ['LICENSE']
