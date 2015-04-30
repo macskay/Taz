@@ -56,3 +56,6 @@ coverage.xml
 # PyBuilder
 target/
 .idea/
+
+# Testing purposes
+.taztest
