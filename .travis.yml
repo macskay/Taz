@@ -14,3 +14,5 @@ notifications:
 script:
   - nosetests tests
   - python integrationtests/remotelawnmowerultra.py
+after_success:
+ - coveralls
