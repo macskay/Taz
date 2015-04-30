@@ -3,9 +3,9 @@ __author__ = 'Max'
 __author__ = 'Max'
 
 import re
-from StringIO import StringIO
-from os import sys, system
-from json import load, loads
+from io import StringIO
+from os import sys
+from json import load
 
 from taz.game import Game, Scene
 

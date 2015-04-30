@@ -71,7 +71,7 @@ class Game(object):
         return False
 
     def update_all_scenes_registered_scenes(self):
-        for scene in self.registered_scenes.iteritems():
+        for scene in self.registered_scenes.items():
             scene[1].registered_scenes = self.registered_scenes
 
     def size_of_stack(self):

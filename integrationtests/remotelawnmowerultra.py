@@ -1,9 +1,9 @@
 __author__ = 'Max'
 
 import re
-from StringIO import StringIO
-from os import sys, system
-from json import load, loads
+from io import StringIO
+from os import sys
+from json import load
 from argparse import ArgumentParser
 from os.path import abspath, join, split
 
