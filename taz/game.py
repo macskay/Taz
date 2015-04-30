@@ -147,7 +147,8 @@ class Game(object):
 
 class Scene(object):
     """
-    This is the abstract base class of all scenes. All Scenes must be derived from this and override the abstract methods.
+    This is the abstract base class of all scenes.
+    All Scenes must be derived from this and override the abstract methods.
     On each tick the render and update functions are called. They get passed the update_context and render_context
     passed to the Game object on creation.
     """
