@@ -11,7 +11,7 @@ setup(name="tazlib",
       packages=['taz'],
       license="GPLv3",
       url="https://github.com/mkli90/Taz",
-      download_url="https://github.com/mkli90/Taz/tarball/1.1.0",
+      download_url="https://github.com/mkli90/Taz/tarball/1.1.1",
       long_description="http://taz.readthedocs.org/en/latest/index.html",
       package_data={
           'tmz': ['LICENSE']
