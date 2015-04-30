@@ -1,3 +1,5 @@
+![Travis-CI Build](https://travis-ci.org/mkli90/Taz.svg?branch=master)
+
 # Taz: Game Loop and Scene Stack
 This project is to aid people in getting started with their own Python based game.
 Taz is a small library handling the switching of scenes and making sure your scenes get
@@ -10,15 +12,10 @@ stack. Whenever the user pops the last stacked scene the game will come to an en
 
 Taz works independent of any python based game library.
 
-Master-Branch: ![Travis-CI Build](https://travis-ci.org/mkli90/Taz.svg?branch=master)
-
-Coverage: [![Coverage Status](https://coveralls.io/repos/mkli90/Taz/badge.svg)](https://coveralls.io/r/mkli90/Taz)
-
-Latest Version: [![PyPI version](https://badge.fury.io/py/tazlib.svg)](http://badge.fury.io/py/tazlib)
-
-Supported Python Versions: [![Python Versions](https://img.shields.io/badge/python-2.7%2C%203.4-blue.svg)](https://pypi.python.org/pypi/tazlib/1.0.0)
-
-License: [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://pypi.python.org/pypi/tazlib/1.0.0)
+[![Coverage Status](https://coveralls.io/repos/mkli90/Taz/badge.svg)](https://coveralls.io/r/mkli90/Taz)
+[![PyPI version](https://badge.fury.io/py/tazlib.svg)](http://badge.fury.io/py/tazlib)
+[![Python Versions](https://img.shields.io/badge/python-2.7%2C%203.4-blue.svg)](https://pypi.python.org/pypi/tazlib/1.0.0)
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://pypi.python.org/pypi/tazlib/1.0.0)
 
 # Documentation
 
