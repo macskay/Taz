@@ -13,16 +13,13 @@ class Game(object):
             exit(0)
 
     class StackEmptyError(Exception):
-        def __init__(self):
-            pass
+        pass
 
     class SceneAlreadyRegisteredError(Exception):
-        def __init__(self):
-            pass
+        pass
 
     class NoRegisteredSceneWithThisIDError(Exception):
-        def __init__(self):
-            pass
+        pass
 
     def __init__(self, update_context, render_context):
         """
@@ -30,7 +27,7 @@ class Game(object):
         :param render_context: This render_context is passed to the render-function of all scenes
 
         To construct an instance of this class, a update_context
-        and a render_context, depenging on the used underlying
+        and a render_context, depending on the used underlying
         engine is used. To ensure functionality call the base class' constructor when overriding the __init__-function.
         """
         self.scene_stack = []
@@ -45,7 +42,7 @@ class Game(object):
                 self.get_top_scene().update(self.update_context)
                 self.get_top_scene().render(self.render_context)
         except SystemExit:
-            pass
+            print("")
 
     def register_new_scene(self, scene):
         """
