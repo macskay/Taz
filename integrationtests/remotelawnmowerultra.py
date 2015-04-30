@@ -11,7 +11,6 @@ from os import sys
 from json import load
 from argparse import ArgumentParser
 from os.path import abspath, join, split
-import codecs
 
 SCRIPT_DIR = abspath(split(__file__)[0])
 INSTRUCTIONS_FILE_PATH = join(SCRIPT_DIR, u"instructions.txt")
@@ -133,9 +132,9 @@ class RoomScene(Scene):
 
     def process_command(self, update_context):
         update_context[u"input_fob"].seek(0)
-        commandText = update_context[u"input_fob"].readline().strip()
+        command_text = update_context[u"input_fob"].readline().strip()
         for expression, command in self.commands:
-            match = expression.match(commandText)
+            match = expression.match(command_text)
             if self.is_expression_valid(command, match, update_context):
                 break
         else:
@@ -156,6 +155,7 @@ class RoomScene(Scene):
         self.output_buffer.write(room[u"description"])
 
     def look_command(self, update_context, match):
+        match.group("")
         self.look_around(update_context)
 
     def look_at_command(self, update_context, match):
@@ -167,29 +167,32 @@ class RoomScene(Scene):
             self.write_invalid_look_to_buffer(update_context)
 
     def go_command(self, update_context, match):
+        match.group("")
         self.output_buffer.write(update_context[u"world_data"][u"config"][u"default_go"])
 
     def go_in_a_room_command(self, update_context, match):
         current_room = self.get_current_room(update_context)
         room_to_go_to = match.group(u"direction")
-        for key, value in current_room[u"exits"].items():
-            if self.can_go_to_that_room(room_to_go_to, value):
-                self.go_to_room(update_context, value)
+        for key_value in current_room[u"exits"].items():
+
+            if self.can_go_to_that_room(room_to_go_to, key_value[1]):
+                self.go_to_room(update_context, key_value[1])
                 break
         else:
             self.write_invalid_room_to_buffer(room_to_go_to, update_context)
 
     def take_command(self, update_context, match):
+        match.group("")
         self.output_buffer.write(update_context[u"world_data"][u"config"][u"default_take"])
 
     def take_an_item_command(self, update_context, match):
         current_room = self.get_current_room(update_context)
         item_to_take = match.group(u"item")
         config = update_context[u"world_data"][u"config"]
-        for key, value in current_room[u"take_objects"].items():
-            if self.can_take_item(key, item_to_take, update_context):
+        for key_value in current_room[u"take_objects"].items():
+            if self.can_take_item(key_value[0], item_to_take, update_context):
                 if self.is_item_needed_for_lawnmower(item_to_take, config):
-                    self.take_item_if_not_already_taken(key, item_to_take, update_context)
+                    self.take_item_if_not_already_taken(key_value[0], item_to_take, update_context)
                 else:
                     self.output_buffer.write(current_room[u"take_objects"][item_to_take])
                 break
@@ -202,6 +205,7 @@ class RoomScene(Scene):
         return item_to_take in config[u"all_items"].values()
 
     def build_lawnmower_command(self, update_context, match):
+        match.group("")
         config = update_context[u"world_data"][u"config"]
         all_items_needed = config[u"all_items"]
         for key, item in all_items_needed.items():
@@ -212,6 +216,7 @@ class RoomScene(Scene):
             self.try_assembling_lawnmower(config)
 
     def mow_lawn_command(self, update_context, match):
+        match.group("")
         config = update_context[u"world_data"][u"config"]
         current_room = self.get_current_room(update_context)
         lawn_room = config[u"lawn_room"]

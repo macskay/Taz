@@ -1,0 +1,6 @@
+strictness: veryhigh
+ignore-paths:
+  - doc
+  - integrationtests
+pep8:
+  full: true
