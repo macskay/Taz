@@ -155,7 +155,6 @@ class RoomScene(Scene):
         self.output_buffer.write(room[u"description"])
 
     def look_command(self, update_context, match):
-        match.group("")
         self.look_around(update_context)
 
     def look_at_command(self, update_context, match):
@@ -167,7 +166,6 @@ class RoomScene(Scene):
             self.write_invalid_look_to_buffer(update_context)
 
     def go_command(self, update_context, match):
-        match.group("")
         self.output_buffer.write(update_context[u"world_data"][u"config"][u"default_go"])
 
     def go_in_a_room_command(self, update_context, match):
@@ -182,7 +180,6 @@ class RoomScene(Scene):
             self.write_invalid_room_to_buffer(room_to_go_to, update_context)
 
     def take_command(self, update_context, match):
-        match.group("")
         self.output_buffer.write(update_context[u"world_data"][u"config"][u"default_take"])
 
     def take_an_item_command(self, update_context, match):
@@ -205,7 +202,6 @@ class RoomScene(Scene):
         return item_to_take in config[u"all_items"].values()
 
     def build_lawnmower_command(self, update_context, match):
-        match.group("")
         config = update_context[u"world_data"][u"config"]
         all_items_needed = config[u"all_items"]
         for key, item in all_items_needed.items():
@@ -216,7 +212,6 @@ class RoomScene(Scene):
             self.try_assembling_lawnmower(config)
 
     def mow_lawn_command(self, update_context, match):
-        match.group("")
         config = update_context[u"world_data"][u"config"]
         current_room = self.get_current_room(update_context)
         lawn_room = config[u"lawn_room"]

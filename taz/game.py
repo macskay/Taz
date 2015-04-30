@@ -1,6 +1,6 @@
 # -*- encoding: UTF-8 -*-
 from abc import ABCMeta, abstractmethod
-from sys import exit
+import sys
 
 
 class Game(object):
@@ -10,7 +10,7 @@ class Game(object):
     """
     class GameExitException(Exception):
         def __init__(self):
-            exit(0)
+            sys.exit(0)
 
     class StackEmptyError(Exception):
         pass
@@ -42,7 +42,7 @@ class Game(object):
                 self.get_top_scene().update(self.update_context)
                 self.get_top_scene().render(self.render_context)
         except SystemExit:
-            print("")
+            pass
 
     def register_new_scene(self, scene):
         """
