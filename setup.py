@@ -4,7 +4,7 @@
 from setuptools import setup
 
 setup(name="tazlib",
-      version="1.1.0",
+      version="1.1.1",
       description="Taz - Game Loop and Scene Stack Manager",
       author="Max Klingmann <KlingmannM@gmail.com>",
       author_email="KlingmannM@gmail.com",
