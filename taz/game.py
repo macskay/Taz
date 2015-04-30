@@ -1,6 +1,4 @@
 # -*- encoding: UTF-8 -*-
-__author__ = 'Max'
-
 from abc import ABCMeta, abstractmethod
 from sys import exit
 
@@ -62,7 +60,7 @@ class Game(object):
 
         scene.game = self
         self.registered_scenes[scene.get_identifier()] = scene
-        self.update_all_scenes_registered_scenes()
+        self.update_all_scenes()
 
     def is_scene_already_registered(self, scene):
         for scene_name in self.registered_scenes:
@@ -70,7 +68,7 @@ class Game(object):
                 return True
         return False
 
-    def update_all_scenes_registered_scenes(self):
+    def update_all_scenes(self):
         for scene in self.registered_scenes.items():
             scene[1].registered_scenes = self.registered_scenes
 

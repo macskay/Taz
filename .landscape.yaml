@@ -1,6 +1,8 @@
-strictness: veryhigh
+strictness: high
 ignore-paths:
   - doc
   - integrationtests
+  - bin
 pep8:
   full: true
+max-line-length: 120
