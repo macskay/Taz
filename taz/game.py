@@ -86,24 +86,6 @@ class Game(object):
         except KeyError:
             raise Game.NoRegisteredSceneWithThisIDError
 
-    def push_the_scene(self, ident):
-        self.pause_current_scene()
-        scene_to_push = self.registered_scenes[ident]
-        scene_to_push.paused = False
-        scene_to_push.initialize_scene()
-        self.scene_stack.insert(0, scene_to_push)
-
-    def pause_current_scene(self):
-        if not self.is_stack_empty():
-            self.scene_stack[0].paused = True
-            self.scene_stack[0].tear_down()
-
-    def is_stack_empty(self):
-        return self.size_of_stack() == 0
-
-    def pop_last_scene(self):
-        return self.size_of_stack() == 1
-
     def pop_scene_from_stack(self):
         """
         :raises Game.StackEmptyError: If the stack is empty and this function is called an error is raised.
@@ -123,6 +105,24 @@ class Game(object):
         self.pause_old_scene(self.scene_stack[0])
         self.scene_stack.pop(0)
         self.resume_new_scene(self.scene_stack[0])
+
+    def push_the_scene(self, ident):
+        self.pause_current_scene()
+        scene_to_push = self.registered_scenes[ident]
+        scene_to_push.paused = False
+        scene_to_push.initialize_scene()
+        self.scene_stack.insert(0, scene_to_push)
+
+    def pause_current_scene(self):
+        if not self.is_stack_empty():
+            self.scene_stack[0].paused = True
+            self.scene_stack[0].tear_down()
+
+    def is_stack_empty(self):
+        return self.size_of_stack() == 0
+
+    def pop_last_scene(self):
+        return self.size_of_stack() == 1
 
     @staticmethod
     def pause_old_scene(oldscene):
