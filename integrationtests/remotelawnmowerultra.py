@@ -121,91 +121,90 @@ class RoomScene(Scene):
     def pause(self):
         pass
 
-    def update(self, update_context):
+    def update(self):
         self.output_buffer = StringIO()
-        update_context[u"input_fob"] = StringIO()
+        self.game.update_context[u"input_fob"] = StringIO()
         command = u"#"
         while command.startswith(u"#"):
             command = self.instructions_file.readline().strip()
         print(u"Travis-CI Command: u"+command)
-        update_context[u"input_fob"].write(command)
-        self.process_command(update_context)
+        self.game.update_context[u"input_fob"].write(command)
+        self.process_command()
         self.output_buffer.write(u"\n")
         self.output_buffer.seek(0)
 
-    def process_command(self, update_context):
-        update_context[u"input_fob"].seek(0)
-        command_text = update_context[u"input_fob"].readline().strip()
+    def process_command(self):
+        self.game.update_context[u"input_fob"].seek(0)
+        command_text = self.game.update_context[u"input_fob"].readline().strip()
         for expression, command in self.commands:
             match = expression.match(command_text)
-            if self.is_expression_valid(command, match, update_context):
+            if self.is_expression_valid(command, match):
                 break
         else:
-            self.write_invalid_command_to_buffer(update_context)
+            self.write_invalid_command_to_buffer()
 
-    @staticmethod
-    def is_expression_valid(command, match, update_context):
+    def is_expression_valid(self, command, match):
         if match:
-            command(update_context, match)
+            command(match)
             return True
         return False
 
-    def write_invalid_command_to_buffer(self, update_context):
-        self.output_buffer.write(update_context[u"world_data"][u"config"][u"invalid_command"])
+    def write_invalid_command_to_buffer(self):
+        self.output_buffer.write(self.game.update_context[u"world_data"][u"config"][u"invalid_command"])
 
-    def look_around(self, update_context):
-        room = self.get_current_room(update_context)
+    def look_around(self):
+        room = self.get_current_room()
         self.output_buffer.write(room[u"description"])
 
-    def look_command(self, update_context, match):
-        self.look_around(update_context)
+    def look_command(self, match):
+        self.look_around()
 
-    def look_at_command(self, update_context, match):
-        room = self.get_current_room(update_context)
+    def look_at_command(self, match):
+        room = self.get_current_room()
         what = match.group(u"what")
         try:
             self.look_up_and_write_object_to_buffer(room, what)
         except StopIteration:
-            self.write_invalid_look_to_buffer(update_context)
+            self.write_invalid_look_to_buffer()
 
-    def go_command(self, update_context, match):
-        self.output_buffer.write(update_context[u"world_data"][u"config"][u"default_go"])
+    def go_command(self, match):
+        self.output_buffer.write(self.game.update_context[u"world_data"][u"config"][u"default_go"])
 
-    def go_in_a_room_command(self, update_context, match):
-        current_room = self.get_current_room(update_context)
+    def go_in_a_room_command(self, match):
+        current_room = self.get_current_room()
         room_to_go_to = match.group(u"direction")
         for key_value in current_room[u"exits"].items():
 
             if self.can_go_to_that_room(room_to_go_to, key_value[1]):
-                self.go_to_room(update_context, key_value[1])
+                self.go_to_room(key_value[1])
                 break
         else:
-            self.write_invalid_room_to_buffer(room_to_go_to, update_context)
+            self.write_invalid_room_to_buffer(room_to_go_to)
 
-    def take_command(self, update_context, match):
-        self.output_buffer.write(update_context[u"world_data"][u"config"][u"default_take"])
+    def take_command(self, match):
+        self.output_buffer.write(self.game.update_context[u"world_data"][u"config"][u"default_take"])
 
-    def take_an_item_command(self, update_context, match):
-        current_room = self.get_current_room(update_context)
+    def take_an_item_command(self, match):
+        current_room = self.get_current_room()
         item_to_take = match.group(u"item")
-        config = update_context[u"world_data"][u"config"]
+        config = self.game.update_context[u"world_data"][u"config"]
         for key_value in current_room[u"take_objects"].items():
-            if self.can_take_item(key_value[0], item_to_take, update_context):
+            if self.can_take_item(key_value[0], item_to_take):
                 if self.is_item_needed_for_lawnmower(item_to_take, config):
-                    self.take_item_if_not_already_taken(key_value[0], item_to_take, update_context)
+                    self.take_item_if_not_already_taken(key_value[0], item_to_take)
                 else:
                     self.output_buffer.write(current_room[u"take_objects"][item_to_take])
                 break
         else:
-            config = update_context[u"world_data"][u"config"]
+            config = self.game.update_context[u"world_data"][u"config"]
             self.output_buffer.write(config[u"invalid_item"] % item_to_take)
 
     @staticmethod
     def is_item_needed_for_lawnmower(item_to_take, config):
         return item_to_take in config[u"all_items"].values()
 
-    def build_lawnmower_command(self, update_context, match):
-        config = update_context[u"world_data"][u"config"]
+    def build_lawnmower_command(self, match):
+        config = self.game.update_context[u"world_data"][u"config"]
         all_items_needed = config[u"all_items"]
         for key, item in all_items_needed.items():
             if self.is_item_not_in_inventory(item):
@@ -214,9 +213,9 @@ class RoomScene(Scene):
         else:
             self.try_assembling_lawnmower(config)
 
-    def mow_lawn_command(self, update_context, match):
-        config = update_context[u"world_data"][u"config"]
-        current_room = self.get_current_room(update_context)
+    def mow_lawn_command(self, match):
+        config = self.game.update_context[u"world_data"][u"config"]
+        current_room = self.get_current_room()
         lawn_room = config[u"lawn_room"]
         if self.is_lawnmower_in_inventory(config):
             if self.is_room_mowable(current_room[u"name"], lawn_room):
@@ -229,24 +228,22 @@ class RoomScene(Scene):
         else:
             self.output_buffer.write(config[u"no_mower"])
 
-    def show_inventory_command(self, update_context, match):
+    def show_inventory_command(self, match):
         self.output_buffer.write(str(self.player.inventory))
 
     @staticmethod
-    def quit_game_command(update_context, match):
+    def quit_game_command(match):
         raise Game.GameExitException
 
-    def help_command(self, update_context, match):
-        self.output_buffer.write(update_context[u"world_data"][u"config"][u"help"])
+    def help_command(self, match):
+        self.output_buffer.write(self.game.update_context[u"world_data"][u"config"][u"help"])
 
-    def show_exits_command(self, update_context, match):
-        current_room = self.get_current_room(update_context)
+    def show_exits_command(self, match):
+        current_room = self.get_current_room()
         list_of_exits = []
         for key, value in current_room[u"exits"].items():
             list_of_exits.append(str(value))
-        self.output_buffer.write(update_context[u"world_data"][u"config"][u"can_go_to"] % str(list_of_exits))
-
-
+        self.output_buffer.write(self.game.update_context[u"world_data"][u"config"][u"can_go_to"] % str(list_of_exits))
 
     @staticmethod
     def is_room_mowable(current_room, lawn_room):
@@ -269,32 +266,32 @@ class RoomScene(Scene):
     def is_player_in_correct_room(self, assemble_room):
         return self.player.room_id == assemble_room
 
-    def take_item_if_not_already_taken(self, key, item_to_take, update_context):
+    def take_item_if_not_already_taken(self, key, item_to_take):
         if item_to_take not in self.player.inventory:
-            self.take_item(key, item_to_take, update_context)
+            self.take_item(key, item_to_take)
         else:
-            self.write_item_taken_twice_to_buffer(update_context)
+            self.write_item_taken_twice_to_buffer()
 
-    def write_item_taken_twice_to_buffer(self, update_context):
-        config = update_context[u"world_data"][u"config"]
+    def write_item_taken_twice_to_buffer(self):
+        config = self.game.update_context[u"world_data"][u"config"]
         self.output_buffer.write(config[u"item_already_in_inv"])
 
     @staticmethod
     def is_item_in_room(key, item_to_take):
         return key == item_to_take
 
-    def take_item(self, key, item_to_take, update_context):
-        current_room = self.get_current_room(update_context)
+    def take_item(self, key, item_to_take):
+        current_room = self.get_current_room()
         self.player.add_item_to_inventory(item_to_take)
         self.output_buffer.write(current_room[u"take_objects"][item_to_take])
 
-    def can_take_item(self, key, item_to_take, update_context):
+    def can_take_item(self, key, item_to_take):
         if self.is_item_in_room(key, item_to_take):
             return True
         return False
 
-    def write_invalid_room_to_buffer(self, room_to_go_to, update_context):
-        config = update_context[u"world_data"][u"config"]
+    def write_invalid_room_to_buffer(self, room_to_go_to):
+        config = self.game.update_context[u"world_data"][u"config"]
         invalid_room = config[u"invalid_room"] % room_to_go_to
         self.output_buffer.write(invalid_room)
 
@@ -302,25 +299,25 @@ class RoomScene(Scene):
     def can_go_to_that_room(room_to_go_to, value):
         return room_to_go_to == value
 
-    def go_to_room(self, update_context, value):
+    def go_to_room(self, value):
         self.player.room_id = value
-        self.look_around(update_context)
+        self.look_around()
 
     def look_up_and_write_object_to_buffer(self, room, what):
         obj = next((value for key, value in room[u"look_objects"].items() if key == what))
         self.output_buffer.write(obj)
 
-    def write_invalid_look_to_buffer(self, update_context):
-        look_cmd_not_valid = update_context[u"world_data"][u"config"][u"invalid_look"]
+    def write_invalid_look_to_buffer(self):
+        look_cmd_not_valid = self.game.update_context[u"world_data"][u"config"][u"invalid_look"]
         self.output_buffer.write(look_cmd_not_valid)
 
-    def get_current_room(self, update_context):
-        rooms = update_context[u"world_data"][u"rooms"]
+    def get_current_room(self):
+        rooms = self.game.update_context[u"world_data"][u"rooms"]
         players_room_name = self.player.room_id
         return next((r for r in rooms if r[u"name"] == players_room_name))
 
-    def render(self, render_context):
-        output_fob = render_context[u"output_fob"]
+    def render(self):
+        output_fob = self.game.render_context[u"output_fob"]
         for line in self.output_buffer:
             output_fob.write(line)
 
@@ -333,7 +330,7 @@ class GameOverScene(Scene):
     def tear_down(self):
         pass
 
-    def render(self, render_context):
+    def render(self):
         pass
 
     def pause(self):
@@ -347,11 +344,11 @@ class GameOverScene(Scene):
     def resume(self):
         pass
 
-    def update(self, update_context):
-        self.quit_game_command(update_context, None)
+    def update(self):
+        self.quit_game_command(None)
 
     @staticmethod
-    def quit_game_command(update_context, match):
+    def quit_game_command(match):
         raise Game.GameExitException
 
 
@@ -365,8 +362,7 @@ class TitleScene(Scene):
         self.welcome_data = None
         self.instructions_file = instructions_file
 
-    @staticmethod
-    def quit_game_command(update_context, match):
+    def quit_game_command(self, match):
         raise Game.GameExitException
 
     def tear_down(self):
@@ -375,8 +371,8 @@ class TitleScene(Scene):
     def pause(self):
         pass
 
-    def render(self, render_context):
-        output_fob = render_context[u"output_fob"]
+    def render(self):
+        output_fob = self.game.render_context[u"output_fob"]
         for line in self.output_buffer:
             output_fob.write(line)
 
@@ -389,28 +385,28 @@ class TitleScene(Scene):
     def resume(self):
         pass
 
-    def update(self, update_context):
+    def update(self):
         self.output_buffer = StringIO()
         command = u"#"
         while command.startswith(u"#"):
             command = self.instructions_file.readline().strip()
         print(command)
-        update_context[u"input_fob"].write(command)
-        self.process_command(update_context)
+        self.game.update_context[u"input_fob"].write(command)
+        self.process_command()
         self.output_buffer.write(u"\n")
         self.output_buffer.seek(0)
 
-    def process_command(self, update_context):
-        update_context[u"input_fob"].seek(0)
-        commandText = update_context[u"input_fob"].readline().strip()
+    def process_command(self):
+        self.game.update_context[u"input_fob"].seek(0)
+        commandText = self.game.update_context[u"input_fob"].readline().strip()
         for expression, command in self.commands:
             match = expression.match(commandText)
-            if self.is_expression_valid(command, match, update_context):
+            if self.is_expression_valid(command, match):
                 break
         else:
             self.output_buffer.write(self.welcome_data[u"invalid_command"])
 
-    def start_game(self, update_context, match):
+    def start_game(self, match):
         print(self.welcome_data[u"game_start"])
         room = RoomScene(u"RoomScene", self.welcome_data, self.instructions_file)
         game.register_new_scene(room)
@@ -420,10 +416,9 @@ class TitleScene(Scene):
     def show_welcome_message(welcome_data):
         print(welcome_data[u"welcome"])
 
-    @staticmethod
-    def is_expression_valid(command, match, update_context):
+    def is_expression_valid(self, command, match):
         if match:
-            command(update_context, match)
+            command(match)
             return True
         return False
 
