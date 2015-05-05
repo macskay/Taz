@@ -4,14 +4,14 @@
 from setuptools import setup
 
 setup(name="tazlib",
-      version="1.1.1",
+      version="1.2.0",
       description="Taz - Game Loop and Scene Stack Manager",
       author="Max Klingmann <KlingmannM@gmail.com>",
       author_email="KlingmannM@gmail.com",
       packages=['taz'],
       license="GPLv3",
       url="https://github.com/mkli90/Taz",
-      download_url="https://github.com/mkli90/Taz/tarball/1.1.1",
+      download_url="https://github.com/mkli90/Taz/tarball/1.2.1",
       long_description="http://taz.readthedocs.org/en/latest/index.html",
       package_data={
           'tmz': ['LICENSE']
