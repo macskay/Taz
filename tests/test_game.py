@@ -163,7 +163,7 @@ class TestScene(TestCase):
 
     def test_if_coupling_between_scene_and_game_works(self):
             game = self.setup_mock_up_scene()
-            self.run_mainloop(game)
+            game.enter_mainloop()
 
     def setup_mock_up_scene(self):
         update_context, render_context = self.setup_contexts()
@@ -187,9 +187,6 @@ class TestScene(TestCase):
             "pump": 0
         }
         return uc, rc
-
-    def run_mainloop(self, game):
-        game.enter_mainloop()
 
     def create_mock_up_scene_objects(self):
         scene1 = MockUpScene("FirstMockUpScene")
@@ -216,10 +213,10 @@ class MockUpScene(Scene):
     def tear_down(self):
         pass
 
-    def update(self, update_context):
+    def update(self):
         self.game.pop_scene_from_stack()
 
-    def render(self, render_context):
+    def render(self):
         pass
 
     def pause(self):

@@ -39,8 +39,8 @@ class Game(object):
     def enter_mainloop(self):
         try:
             while True:
-                self.get_top_scene().update(self.update_context)
-                self.get_top_scene().render(self.render_context)
+                self.get_top_scene().update()
+                self.get_top_scene().render()
         except SystemExit:
             pass
 
@@ -181,11 +181,11 @@ class Scene(object):
         """ This method builds up the scene """
 
     @abstractmethod  # pragma: no cover
-    def update(self, update_context):
+    def update(self):
         """ This method updates the game's logic """
 
     @abstractmethod  # pragma: no cover
-    def render(self, render_context):
+    def render(self):
         """ This method draws the game's screen """
 
     @abstractmethod  # pragma: no cover
