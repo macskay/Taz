@@ -19,7 +19,7 @@ Content:
 
    intro
    using_game
-   inhereting_scene
+   inheriting_scene
    examples
 
 

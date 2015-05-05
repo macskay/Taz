@@ -71,8 +71,7 @@ You will get an answer n the followeng sub-sections.
 Using the Update method
 _______________________
 The update method is responsible for updating (who would've thought of it) the game's
-or scene's status. It always gets passed the update_context, which is set up on creation of
-the game class.
+or scene's status.
 This function should listen and respond to input events, calculate new positions of players,
 basically doing most of the things that happen within a certain scene.
 
@@ -91,16 +90,15 @@ basically doing most of the things that happen within a certain scene.
             self.screen = Screen()
             self.create_nice_map()
 
-        def update(self, update_context):
+        def update(self):
             key = self.capture_input()
-            self.player.move_player(update_context["deltatime"], key)
+            self.player.move_player(self.game.update_context["deltatime"], key)
 ..
 
 Using the Render method
 _______________________
 The render method is the function to get your game to life. It is responsible for and just for drawing/printing everything to your screen.
-It is NOT responsbile for any calculations, as this is update's job. It always gets passed the render_context, which is set up on creation of
-the game class.
+It is NOT responsible for any calculations, as this is update's job.
 
 .. code-block:: python
 
@@ -117,11 +115,11 @@ the game class.
             self.screen = Screen()
             self.create_nice_map()
 
-        def update(self, update_context):
+        def update(self):
             key = self.capture_input()
-            self.player.move_player(update_context["deltatime"], key)
+            self.player.move_player(self.game.update_context["deltatime"], key)
 
-        def render(self, render_context):
+        def render(self):
             self.screen.draw(self.player)
 ..
 
@@ -151,11 +149,11 @@ is called, so you can put everything in here, which should get re-initiated.
             self.screen = Screen()
             self.create_nice_map()
 
-        def update(self, update_context):
+        def update(self):
             key = self.capture_input()
-            self.player.move_player(update_context["deltatime"], key)
+            self.player.move_player(self.game.update_context["deltatime"], key)
 
-        def render(self, render_context):
+        def render(self):
             self.screen.draw(self.player)
 ..
 
