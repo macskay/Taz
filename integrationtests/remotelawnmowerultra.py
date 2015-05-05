@@ -118,6 +118,9 @@ class RoomScene(Scene):
     def tear_down(self):
         pass
 
+    def pause(self):
+        pass
+
     def update(self, update_context):
         self.output_buffer = StringIO()
         update_context[u"input_fob"] = StringIO()
@@ -333,6 +336,9 @@ class GameOverScene(Scene):
     def render(self, render_context):
         pass
 
+    def pause(self):
+        pass
+
     def initialize_scene(self):
         with open(WELCOME_FILE_PATH) as f:
             welcome_data = load(f)
@@ -364,6 +370,9 @@ class TitleScene(Scene):
         raise Game.GameExitException
 
     def tear_down(self):
+        pass
+
+    def pause(self):
         pass
 
     def render(self, render_context):
