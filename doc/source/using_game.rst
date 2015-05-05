@@ -1,6 +1,5 @@
 Using the "Game" class
 ======================
-.. module:: taz.game
 
 This sections is to present the Game class and its functionalities
 
@@ -45,14 +44,15 @@ for example. To see an example let's look at the following code block:
 In this case the update and render context just hold the information which input and output to use. This method
 is used in the integrationtest, which is represented as text-based adventure. So in this particular
 example the render-function always writes to sys.stdout, while the update-function reads form sys.stdin.
-You can setup these contexts to whatever needs you have in your application.
+You can setup these contexts to whatever needs you have in your application and access them directly through
+the Game instance.
 
 Registering scenes with the game
 --------------------------------
 Whenever a scene is created the game needs to know about it, thus is needs to be registered with the game.
 The
 
-<insert register scene here>
+.. automethod:: taz.game.Game.register_new_scene
 
 function gives you the possibility to register your scene object.
 The registration of scenes needs to be done before the scene gets pushed to the stack, otherwise
@@ -62,14 +62,15 @@ Using the scene stack
 ---------------------
 Using the scene stack is fairly simple. To push a scene on the you use the
 
-<insert push function>
+
+.. automethod:: taz.game.Game.push_scene_on_stack
 
 with the scene's identifier. Whenever a scene is pushed on the stack
 its **initialize**- function is called. When you push a scene on top
 another this scene gets paused.
-To pop a scene you use the
+To pop a scene you use
 
-<insert pop function>
+.. automethod:: taz.game.Game.pop_scene_from_stack
 
 Whenever you pop a scene, which is on top of another scene
 that scene's **resume**-function is called in order to re-initiate

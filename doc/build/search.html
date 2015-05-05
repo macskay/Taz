@@ -5,16 +5,16 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; Taz 1.0.0b1 documentation</title>
+  <title>Search &mdash; Taz 1.0.0 documentation</title>
   
 
   
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -30,10 +30,10 @@
   
 
   
-    <link rel="top" title="Taz 1.0.0b1 documentation" href="index.html"/> 
+    <link rel="top" title="Taz 1.0.0 documentation" href="index.html"/> 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -45,8 +45,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-nav-search">
         
-          <a href="index.html" class="fa fa-home"> Taz</a>
+
         
+          <a href="index.html" class="icon icon-home"> Taz
+        
+
+        
+        </a>
+
         
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="#" method="get">
@@ -55,6 +61,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+        
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
@@ -77,10 +85,19 @@
 <li class="toctree-l2"><a class="reference internal" href="using_game.html#sharing-data-between-all-scenes">Sharing data between all scenes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="inhereting_scene.html">Inheriting the &#8220;Scene&#8221; class</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_scene.html#instancing-the-scene-class">Instancing the Scene class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_scene.html#a-scene-s-life-cycle">A Scene&#8217;s life cycle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inhereting_scene.html#adding-data-to-a-single-scene">Adding data to a single scene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inheriting_scene.html">Inheriting the &#8220;Scene&#8221; class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inheriting_scene.html#instancing-the-scene-class">Instancing the Scene class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inheriting_scene.html#a-scene-s-life-cycle">A Scene&#8217;s life cycle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="inheriting_scene.html#what-to-put-in-initialize">What to put in &#8220;initialize&#8221;</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inheriting_scene.html#the-scenes-event-cycle">The scenes event cycle</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="inheriting_scene.html#using-the-update-method">Using the Update method</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inheriting_scene.html#using-the-render-method">Using the Render method</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="inheriting_scene.html#what-to-put-in-tear-down-and-resume">What to put in tear_down and resume</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="inheriting_scene.html#adding-data-to-a-single-scene">Adding data to a single scene</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
@@ -151,10 +168,10 @@
         &copy; Copyright 2015, Max Klingmann &lt;KlingmannM@gmail.com&gt;.
     </p>
   </div>
-
   Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
+
 </footer>
+
         </div>
       </div>
 
@@ -169,7 +186,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0.0b1',
+            VERSION:'1.0.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
