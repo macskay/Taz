@@ -221,3 +221,6 @@ class MockUpScene(Scene):
 
     def render(self, render_context):
         pass
+
+    def pause(self):
+        pass

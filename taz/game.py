@@ -102,7 +102,7 @@ class Game(object):
         if self.pop_last_scene():
             raise Game.GameExitException
 
-        self.pause_old_scene(self.scene_stack[0])
+        self.destroy_old_scene(self.scene_stack[0])
         self.scene_stack.pop(0)
         self.resume_new_scene(self.scene_stack[0])
 
@@ -116,7 +116,7 @@ class Game(object):
     def pause_current_scene(self):
         if not self.is_stack_empty():
             self.scene_stack[0].paused = True
-            self.scene_stack[0].tear_down()
+            self.scene_stack[0].pause()
 
     def is_stack_empty(self):
         return self.size_of_stack() == 0
@@ -125,9 +125,9 @@ class Game(object):
         return self.size_of_stack() == 1
 
     @staticmethod
-    def pause_old_scene(oldscene):
+    def destroy_old_scene(oldscene):
         oldscene.paused = True
-        oldscene.tear_down()
+        oldscene.pause()
 
     @staticmethod
     def resume_new_scene(newscene):
@@ -195,3 +195,7 @@ class Scene(object):
     @abstractmethod  # pragma: no cover
     def resume(self):
         """ This re-builds the state before pausing it (e.g. after returning from an options menu) """
+
+    @abstractmethod  # pragma: no cover
+    def pause(self):
+        """  This function is called whenever a scene is pushed on top of the active one """
