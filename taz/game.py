@@ -2,9 +2,10 @@
 from abc import ABCMeta, abstractmethod
 import sys
 
-from logging import getLogger, basicConfig, INFO
+from logging import getLogger
 
 logger = getLogger(__name__)
+
 
 class Game(object):
     """
