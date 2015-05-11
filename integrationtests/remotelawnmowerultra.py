@@ -107,7 +107,7 @@ class RoomScene(Scene):
         self.commands.append((re.compile(u"^help$$"), self.help_command))
         self.commands.append((re.compile(u"^show exits$"), self.show_exits_command))
 
-    def initialize_scene(self):
+    def initialize(self):
         self.player = Player()
         self.player.room_id = self.welcome_data[u"starting_room"]
         print(self.welcome_data[u"intro"])
@@ -336,7 +336,7 @@ class GameOverScene(Scene):
     def pause(self):
         pass
 
-    def initialize_scene(self):
+    def initialize(self):
         with open(WELCOME_FILE_PATH) as f:
             welcome_data = load(f)
         print(welcome_data[u"outro"])
@@ -376,7 +376,7 @@ class TitleScene(Scene):
         for line in self.output_buffer:
             output_fob.write(line)
 
-    def initialize_scene(self):
+    def initialize(self):
         with open(WELCOME_FILE_PATH) as f:
             welcome_data = load(f)
         self.welcome_data = welcome_data
