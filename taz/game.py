@@ -2,6 +2,9 @@
 from abc import ABCMeta, abstractmethod
 import sys
 
+from logging import getLogger, basicConfig, INFO
+
+logger = getLogger(__name__)
 
 class Game(object):
     """
@@ -119,7 +122,8 @@ class Game(object):
     def try_scene_initialization(self, scene_to_push):
         try:
             scene_to_push.initialize()
-        except:
+        except Exception as ex:
+            logger.exception(ex)
             raise Game.SceneInitializationFailed
 
     def pause_current_scene(self):
