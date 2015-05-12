@@ -2,6 +2,10 @@
 from abc import ABCMeta, abstractmethod
 import sys
 
+from logging import getLogger
+
+logger = getLogger(__name__)
+
 
 class Game(object):
     """
@@ -19,6 +23,9 @@ class Game(object):
         pass
 
     class NoRegisteredSceneWithThisIDError(Exception):
+        pass
+
+    class SceneInitializationFailed(Exception):
         pass
 
     def __init__(self, update_context, render_context):
@@ -110,8 +117,15 @@ class Game(object):
         self.pause_current_scene()
         scene_to_push = self.registered_scenes[ident]
         scene_to_push.paused = False
-        scene_to_push.initialize_scene()
+        self.try_scene_initialization(scene_to_push)
         self.scene_stack.insert(0, scene_to_push)
+
+    def try_scene_initialization(self, scene_to_push):
+        try:
+            scene_to_push.initialize()
+        except Exception as ex:
+            logger.exception(ex)
+            raise Game.SceneInitializationFailed
 
     def pause_current_scene(self):
         if not self.is_stack_empty():
@@ -177,7 +191,7 @@ class Scene(object):
         return self.paused
 
     @abstractmethod  # pragma: no cover
-    def initialize_scene(self):
+    def initialize(self):
         """ This method builds up the scene """
 
     @abstractmethod  # pragma: no cover

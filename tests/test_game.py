@@ -4,6 +4,7 @@ __author__ = 'Max'
 from unittest import TestCase
 from logging import getLogger, basicConfig, INFO
 from taz.game import Game, Scene
+from mock import patch
 
 logger = getLogger(__name__)
 basicConfig(level=INFO, format=' Log: - %(message)s')
@@ -132,6 +133,12 @@ class TestGame(TestCase):
         self.assertEqual(len(self.scenetwo.registered_scenes), 3)
         self.assertEqual(len(self.scenethree.registered_scenes), 3)
 
+    @patch("taz.game.Scene.initialize")
+    def test_when_scene_initialization_fails_raise_exception(self, mock_initialize):
+        scene_fail = MockUpScene("scene_fail")
+        self.game.register_new_scene(scene_fail)
+        self.assertRaises(Game.SceneInitializationFailed, self.game.try_scene_initialization, scene_fail.get_identifier)
+
     def register_scenes(self):
         self.game.register_new_scene(self.sceneone)
         self.game.register_new_scene(self.scenetwo)
@@ -154,7 +161,7 @@ class TestScene(TestCase):
         self.assertEqual(self.scene.get_identifier(), "TestScene")
 
     def test_if_scene_can_be_initialized(self):
-        self.scene.initialize_scene()
+        self.scene.initialize()
 
     def test_if_scene_gets_resumed_paused_should_be_false(self):
         self.scene.tear_down()
@@ -204,7 +211,7 @@ class TestScene(TestCase):
 
 
 class MockUpScene(Scene):
-    def initialize_scene(self):
+    def initialize(self):
         pass
 
     def resume(self):
