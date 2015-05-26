@@ -85,7 +85,8 @@ class TestGame(TestCase):
         self.game.push_scene_on_stack(self.scenetwo.get_identifier())
 
         self.game.pop_scene_from_stack()
-        self.assertRaises(SystemExit, self.game.pop_scene_from_stack)
+        self.game.pop_scene_from_stack()
+        self.assertRaises(SystemExit, self.game.step)
 
     def test_name_of_top_scene(self):
         self.game.register_new_scene(self.scenetwo)
