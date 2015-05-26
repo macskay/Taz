@@ -46,10 +46,19 @@ class Game(object):
     def enter_mainloop(self):
         try:
             while True:
-                self.get_top_scene().update()
-                self.get_top_scene().render()
+                self.step()
         except SystemExit:
             pass
+
+    def step(self):
+        self.exit_if_empty()  # Exit if the stack was emptied external to any scene
+        self.get_top_scene().update()
+        if not self.is_stack_empty():  # Only render if we have a scene
+            self.get_top_scene().render()
+
+    def exit_if_empty(self):
+        if self.is_stack_empty():
+            raise self.GameExitException()
 
     def register_new_scene(self, scene):
         """
@@ -75,9 +84,6 @@ class Game(object):
     def update_all_scenes(self):
         for scene in self.registered_scenes.items():
             scene[1].registered_scenes = self.registered_scenes
-
-    def size_of_stack(self):
-        return len(self.scene_stack)
 
     def push_scene_on_stack(self, ident):
         """
@@ -106,12 +112,12 @@ class Game(object):
         """
         if self.is_stack_empty():
             raise Game.StackEmptyError
-        if self.pop_last_scene():
-            raise Game.GameExitException
 
         self.destroy_old_scene(self.scene_stack[0])
         self.scene_stack.pop(0)
-        self.resume_new_scene(self.scene_stack[0])
+
+        if not self.is_stack_empty():
+            self.resume_new_scene(self.scene_stack[0])
 
     def push_the_scene(self, ident):
         self.pause_current_scene()
@@ -133,10 +139,10 @@ class Game(object):
             self.scene_stack[0].pause()
 
     def is_stack_empty(self):
-        return self.size_of_stack() == 0
+        return len(self.scene_stack) == 0
 
-    def pop_last_scene(self):
-        return self.size_of_stack() == 1
+    def size_of_stack(self):
+        return len(self.scene_stack)
 
     @staticmethod
     def destroy_old_scene(oldscene):
