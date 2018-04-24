@@ -19,13 +19,13 @@ see the following code-block of an example sub-class:
 
 .. code-block:: python
 
-    from taz import Game, Scene
+    from taz.game import Game, Scene
 
     class MyScene(Scene):
         def __init__(self, identifier)
             super(MyScene, self).__init__(identifier)
 
-        def initialize_scene(self):
+        def initialize(self):
             self.player = 0
             self.screen = 0
 ..
