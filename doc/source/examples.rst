@@ -59,6 +59,7 @@ Example Usage with PyGame
     
         game.push_scene_on_stack("Red-Scene")
         game.enter_mainloop()
+..
 
 
 
