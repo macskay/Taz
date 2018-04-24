@@ -3,7 +3,7 @@
 [![Code Health](https://landscape.io/github/macskay/Taz/master/landscape.svg)](https://landscape.io/github/macskay/Taz/master)
 [![PyPI version](https://badge.fury.io/py/tazlib.svg)](http://badge.fury.io/py/tazlib)
 [![Python Versions](https://img.shields.io/badge/python-2.7%2C%203.4-blue.svg)](https://pypi.python.org/pypi/tazlib/)
-[![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/macskay/Taz/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/macskay/Taz/blob/master/LICENSE)
 
 # Taz: Game Loop and Scene Stack
 This project is to aid people in getting started with their own Python based game.
