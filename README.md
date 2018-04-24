@@ -1,9 +1,9 @@
-[![Travis-CI Build](https://travis-ci.org/mkli90/Taz.svg?branch=master)](https://travis-ci.org/mkli90/Taz)
-[![Coverage Status](https://coveralls.io/repos/mkli90/Taz/badge.svg?branch=master)](https://coveralls.io/r/mkli90/Taz)
-[![Code Health](https://landscape.io/github/mkli90/Taz/master/landscape.svg)](https://landscape.io/github/mkli90/Taz/master)
+[![Travis-CI Build](https://travis-ci.org/macskay/Taz.svg?branch=master)](https://travis-ci.org/macskay/Taz)
+[![Coverage Status](https://coveralls.io/repos/macskay/Taz/badge.svg?branch=master)](https://coveralls.io/r/macskay/Taz)
+[![Code Health](https://landscape.io/github/macskay/Taz/master/landscape.svg)](https://landscape.io/github/macskay/Taz/master)
 [![PyPI version](https://badge.fury.io/py/tazlib.svg)](http://badge.fury.io/py/tazlib)
 [![Python Versions](https://img.shields.io/badge/python-2.7%2C%203.4-blue.svg)](https://pypi.python.org/pypi/tazlib/)
-[![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/mkli90/Taz/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/macskay/Taz/blob/master/LICENSE)
 
 # Taz: Game Loop and Scene Stack
 This project is to aid people in getting started with their own Python based game.
