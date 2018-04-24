@@ -6,7 +6,7 @@ Example Usage with PyGame
 
 In the following example two scenes are registered and the scene filling the background with the color red is pushed first. Upon pressing the "Return"-Key on the keyboard the "Green-Scene" is pushed to the game-stack and from then on its render and update methods are called. When Return is pressed again the scene pops itself from the stack. An example Use Case for this scenario would be the opening of an Options menu.
 
-..code-block:: python
+.. code-block:: python
 
     from taz.game import Game, Scene
     import pygame
